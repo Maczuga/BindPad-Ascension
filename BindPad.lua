@@ -28,6 +28,18 @@ local BINDPAD_MAXPROFILETAB = 12;
 local BINDPAD_GENERAL_TAB = 1;
 local BINDPAD_SAVEFILE_VERSION = 1.3;
 
+local BindPadPetAction = {
+  -- Move To pet command is not supported
+  -- since there is no slash command for Move To.
+  -- [PET_ACTION_MOVE_TO] = ...,
+  [PET_ACTION_ATTACK] = SLASH_PET_ATTACK1,
+  [PET_ACTION_FOLLOW] = SLASH_PET_FOLLOW1,
+  [PET_ACTION_WAIT] = SLASH_PET_STAY1,
+  [PET_MODE_AGGRESSIVE] = SLASH_PET_AGGRESSIVE1,
+  [PET_MODE_DEFENSIVE] = SLASH_PET_DEFENSIVE1,
+  [PET_MODE_PASSIVE] = SLASH_PET_PASSIVE1
+};
+
 -- Initialize the saved variable for BindPad.
 BindPadVars = {
   tab = BINDPAD_GENERAL_TAB,
@@ -142,8 +154,8 @@ function BindPadFrame_OnLoad(self)
   self:RegisterEvent("UPDATE_BINDINGS");
 end
 
-function BindPadFrame_OnMouseDown(self)
-  if arg1 == "RightButton" then
+function BindPadFrame_OnMouseDown(self, button)
+  if button == "RightButton" then
     BindPadCore.ClearCursor();
   end
 end
@@ -152,7 +164,9 @@ function BindPadFrame_OnEnter(self)
   BindPadCore.UpdateCursor();
 end
 
-function BindPadFrame_OnEvent(self)
+function BindPadFrame_OnEvent(self, event, ...)
+  local arg1, arg2 = ...;
+
   if event == "ACTIONBAR_SLOT_CHANGED" then
     BindPadCore.UpdateHotkey(arg1, BindPadCore.GetActionButton(arg1));
   elseif event == "UPDATE_BINDINGS" then
@@ -399,7 +413,7 @@ function BindPadSlot_OnUpdateBindings(self)
   end
 end
 
-function BindPadSlot_OnClick(self, button)
+function BindPadSlot_OnClick(self, button, down)
   if button == "RightButton" then
     if BindPadCore.CursorHasIcon() then
       BindPadCore.ClearCursor();
@@ -448,6 +462,10 @@ function BindPadSlot_OnReceiveDrag(self)
 
   local type, detail, subdetail = GetCursorInfo();
   if type then
+    if type == "petaction" then
+      detail = BindPadCore.PickupSpellBookItem_slot;
+      subdetail = BindPadCore.PickupSpellBookItem_bookType;
+    end
     ClearCursor();
     ResetCursor();
     BindPadCore.PickupSlot(self, self:GetID());
@@ -475,6 +493,11 @@ function BindPadSlot_OnEnter(self)
   if padSlot == nil or padSlot.type == nil then
     return;
   end
+
+  if BindPadCore.CheckCorruptedSlot(padSlot) then
+    return;
+  end
+
   GameTooltip:SetOwner(self, "ANCHOR_LEFT");
 
   if "ITEM" == padSlot.type then
@@ -520,7 +543,7 @@ function BindPadSlot_UpdateState(self)
   local addbutton = getglobal(self:GetName().."AddButton");
   local border = getglobal(self:GetName().."Border");
 
-  if padSlot and padSlot.type then
+  if padSlot and padSlot.type and padSlot.action then
     icon:SetTexture(padSlot.texture);
     icon:Show();
     addbutton:Hide();
@@ -561,6 +584,7 @@ function BindPadMacroPopupFrame_Open(self)
   end
   local padSlot = BindPadCore.GetSlotInfo(self:GetID());
   local newFlag = false;
+  BindPadCore.CheckCorruptedSlot(padSlot);
 
   BindPadMacroPopup_oldPadSlot.action = padSlot.action;
   BindPadMacroPopup_oldPadSlot.id = padSlot.id;
@@ -625,7 +649,7 @@ end
 function BindPadMacroPopupFrame_Update(self)
   local numMacroIcons = GetNumMacroIcons();
   local macroPopupIcon, macroPopupButton;
-  local macroPopupOffset = FauxScrollFrame_GetOffset(BindPadMacroPopupScrollFrame);
+  local macroPopupOffset = FauxScrollFrame_GetOffset(BindPadMacroPopupScrollFrame) or 0;
   local index;
 
   -- Icon list
@@ -874,6 +898,25 @@ function BindPadCore.PlaceIntoSlot(id, type, detail, subdetail)
     padSlot.texture = texture;
     padSlot.type = "SPELL";
 
+    elseif type == "petaction" then
+      local spellName, spellRank = GetSpellBookItemName(detail, subdetail);
+      local texture = GetSpellBookItemTexture(detail, subdetail);
+      if BindPadPetAction[spellName] then
+        padSlot.bookType = nil;
+        padSlot.name = BindPadCore.NewBindPadMacroName(padSlot, BindPadPetAction[spellName]);
+        padSlot.rank = nil;
+        padSlot.texture = texture;
+        padSlot.type = "CLICK";
+        padSlot.macrotext = BindPadPetAction[spellName];
+      else
+        padSlot.bookType = subdetail;
+        padSlot.name = spellName;
+        padSlot.rank = nil;
+        padSlot.texture = texture;
+        padSlot.type = "SPELL";
+        padSlot.macrotext = nil;
+      end
+
   elseif type == "merchant" then
     padSlot.linktext = GetMerchantItemLink(detail);
     local name,_,_,_,_,_,_,_,_,texture = GetItemInfo(padSlot.linktext);
@@ -922,6 +965,29 @@ function BindPadCore.PlaceVirtualIconIntoSlot(id, drag)
 
   drag.type = nil;
   PlaySound("igAbilityIconDrop");
+end
+
+function BindPadCore.CheckCorruptedSlot(padSlot)
+  if padSlot.type == "ITEM" and padSlot.linktext and padSlot.name and
+    padSlot.texture and padSlot.action then return false; end
+  if padSlot.type == "MACRO" and padSlot.name and padSlot.texture and
+    padSlot.action then return false; end
+  if padSlot.type == "SPELL" and padSlot.bookType and padSlot.name and
+    padSlot.texture and padSlot.action then return false; end
+  if padSlot.type == "CLICK" and padSlot.name and padSlot.texture and
+    padSlot.macrotext and padSlot.action then return false; end
+
+  padSlot.action = nil;
+  padSlot.bookType = nil;
+  padSlot.id = nil;
+  padSlot.linktext = nil;
+  padSlot.macrotext = nil;
+  padSlot.name = nil;
+  padSlot.rank = nil;
+  padSlot.texture = nil;
+  padSlot.type = nil;
+  padSlot.fastTrigger = nil;
+  return true;
 end
 
 function BindPadCore.GetCurrentProfileNum()
@@ -1225,8 +1291,11 @@ function BindPadCore.GetSpellNum(bookType)
   if bookType == BOOKTYPE_PET then
     spellNum = HasPetSpells() or 0;
   else
-    local _,_,offset,num = GetSpellTabInfo(GetNumSpellTabs());
-    spellNum = offset+num;
+    for i = 1, MAX_SKILLLINE_TABS, 1 do
+      local name, texture, offset, numSpells = GetSpellTabInfo(i);
+      if not name then break end
+      spellNum = offset + numSpells;
+    end
   end
   return spellNum;
 end
@@ -1264,15 +1333,6 @@ function BindPadCore.FindSpellIdByName(srchName, srchRank, bookType)
   end
 end
 
-function BindPadCore.FindCompanionIdByName(srchName, TypeID)
-  for i = GetNumCompanions(TypeID), 1, -1 do
-    local creatureID, creatureName, creatureSpellID, texture = GetCompanionInfo(TypeID, i);
-    if creatureName == srchName then
-      return i;
-    end
-  end
-end
-
 function BindPadCore.GetBindingText(name, prefix, returnAbbr)
   local modKeys = GetBindingText(name, prefix, nil);
 
@@ -1302,35 +1362,26 @@ function BindPadCore.GetActionCommand(actionSlot, fastTrigger)
   local type, id, subType, subSubType = GetActionInfo(actionSlot);
   local commandType, name;
 
+  local prefix = fastTrigger and "BindPadFast" or "BindPad";
+
   if type == "spell" then
     if id == 0 then
       -- When player is training new rank of the spell,
       -- two GetActionInfo events fired and 1st one returns invalid id from GetActionInfo.
       return nil;
     end
-    if fastTrigger then
-      commandType = "CLICK BindPadFastKey:SPELL ";
-    else
-      commandType = "CLICK BindPadKey:SPELL ";
-    end
+
+    commandType = "CLICK " .. prefix .. "Key:SPELL ";
     local spellName, spellRank = GetSpellName(id, subType);
     if BindPadCore.IsHighestRank(id, subType) then
       spellRank = nil;
     end
     name = BindPadCore.GetSpellName(spellName, spellRank);
   elseif type == "item" then
-    if fastTrigger then
-      commandType = "CLICK BindPadFastKey:ITEM ";
-    else
-      commandType = "CLICK BindPadKey:ITEM ";
-    end
+    commandType = "CLICK " .. prefix .. "Key:ITEM ";
     name,_ = GetItemInfo(id);
   elseif type == "macro" then
-    if fastTrigger then
-      commandType = "CLICK BindPadFastKey:MACRO ";
-    else
-      commandType = "CLICK BindPadKey:MACRO ";
-    end
+    commandType = "CLICK " .. prefix .. "Key:MACRO ";
     name,_ = GetMacroInfo(id);
   else
     return nil;
@@ -1373,13 +1424,6 @@ function BindPadCore.UpdateHotkey(actionSlot, ...)
     local command = BindPadCore.GetActionCommand(actionSlot);
     if command then
       local key = GetBindingKey(command);
-      if not key then
-        -- Check action for fast trigger key.
-        command = BindPadCore.GetActionCommand(actionSlot, true);
-        if command then
-          key = GetBindingKey(command);
-        end
-      end
       if key then
         local _, _, virtualButton = string.find(command, "^CLICK BindPadKey:(.+)");
         if virtualButton and not BindPadKey:GetAttribute("*type-"..virtualButton) then
@@ -1491,7 +1535,25 @@ function BindPadCore.GetActionTextureHook(actionSlot)
   BindPadUpdateFrame:Show();
 end
 -- As far as I know, GetActionTexture is only called by various ActionButtons.
-hooksecurefunc("GetActionTexture", BindPadCore.GetActionTextureHook);
+-- hooksecurefunc("GetActionTexture", BindPadCore.GetActionTextureHook);
+
+function BindPadCore.ActionButton_UpdateHook(self)
+  if not self then return; end
+
+  if not self.action then return; end
+
+  local thisName = self:GetName();
+  if not thisName then return; end
+
+  local hotkey = getglobal(thisName .. "HotKey") or self.hotkey;
+  if not hotkey then return; end
+
+  BindPadCore.AddActionButton(self.action, thisName);
+
+  -- Use a single shot of OnUpdate for intial update of hotkeys.
+  BindPadUpdateFrame:Show();
+end
+hooksecurefunc("ActionButton_Update", BindPadCore.ActionButton_UpdateHook);
 
 
 function BindPadCore.ChatEdit_InsertLinkHook(text)
@@ -1523,6 +1585,12 @@ function BindPadCore.ChatEdit_InsertLinkHook(text)
 end
 
 hooksecurefunc("ChatEdit_InsertLink", BindPadCore.ChatEdit_InsertLinkHook);
+
+function BindPadCore.PickupSpellHook(slot, bookType)
+    BindPadCore.PickupSpell_slot = slot;
+    BindPadCore.PickupSpell_bookType = bookType;
+end
+hooksecurefunc("PickupSpell", BindPadCore.PickupSpellHook);
 
 
 function BindPadCore.InitBindPad()
@@ -1636,9 +1704,7 @@ function BindPadCore.NewBindPadMacroName(padSlot, name)
     successFlag = true;
     for gid = 1, BINDPAD_TOTALSLOTS, 1 do
       local curSlot = BindPadCore.GetAllSlotInfo(gid);
-      if "CLICK" == curSlot.type and
-            name == curSlot.name and
-         padSlot ~= curSlot then
+      if ("CLICK" == curSlot.type and padSlot ~= curSlot and curSlot.name ~= nil and strlower(name) == strlower(curSlot.name)) then
         local first, last, num = strfind(name, "(%d+)$");
         if nil == num then
           name = name.."_2";
@@ -1670,6 +1736,7 @@ function BindPadCore.UpdateCursor()
 end
 
 function BindPadCore.GetSpellName(name, rank)
+  if name == nil then return nil; end
   if rank == nil then
     if strfind(name, "(", 1, true) then
       -- Workaround for the issue of SetBinding API;
@@ -1685,27 +1752,18 @@ function BindPadCore.GetSpellName(name, rank)
 end
 
 function BindPadCore.CreateBindPadMacroAction(padSlot)
-  if padSlot.fastTrigger then
-    if "ITEM" == padSlot.type then
-      return "CLICK BindPadFastKey:ITEM "..padSlot.name;
-    elseif "SPELL" == padSlot.type then
-      return "CLICK BindPadFastKey:SPELL "..BindPadCore.GetSpellName(padSlot.name, padSlot.rank);
-    elseif "MACRO" == padSlot.type then
-      return "CLICK BindPadFastKey:MACRO "..padSlot.name;
-    elseif "CLICK" == padSlot.type then
-      return "CLICK BindPadFastMacro:"..padSlot.name;
-    end
-  else
-    if "ITEM" == padSlot.type then
-      return "CLICK BindPadKey:ITEM "..padSlot.name;
-    elseif "SPELL" == padSlot.type then
-      return "CLICK BindPadKey:SPELL "..BindPadCore.GetSpellName(padSlot.name, padSlot.rank);
-    elseif "MACRO" == padSlot.type then
-      return "CLICK BindPadKey:MACRO "..padSlot.name;
-    elseif "CLICK" == padSlot.type then
-      return "CLICK BindPadMacro:"..padSlot.name;
-    end
+  local prefix = padSlot.fastTrigger and "BindPadFast" or "BindPad";
+
+  if "ITEM" == padSlot.type then
+    return "CLICK " .. prefix .. "Key:ITEM "..padSlot.name;
+  elseif "SPELL" == padSlot.type then
+    return "CLICK " .. prefix .. "Key:SPELL "..BindPadCore.GetSpellName(padSlot.name, padSlot.rank);
+  elseif "MACRO" == padSlot.type then
+    return "CLICK " .. prefix .. "Key:MACRO "..padSlot.name;
+  elseif "CLICK" == padSlot.type then
+    return "CLICK " .. prefix .. "Macro:"..padSlot.name;
   end
+
   return nil;
 end
 

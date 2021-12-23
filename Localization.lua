@@ -84,7 +84,7 @@ if(GetLocale() == "zhTW") then
 	BINDPAD_TEXT_CONFIRM_CONVERT = "您確認轉換 %s \"%s\" 為 BindPad 巨集?";
 	BINDPAD_TEXT_SHOW_HOTKEY = "顯示綁定按鍵文字";
 	BINDPAD_TOOLTIP_MACRO = "巨集: ";
-	BINDPAD_TOOLTIP_BINDPADMACRO = "BindPad 巨集(%d): %s";
+	BINDPAD_TOOLTIP_BINDPADMACRO = "BindPad 巨集: %s";
 	BINDPAD_TOOLTIP_DOWNRANK = "降低等級到: ";
 	BINDPAD_TOOLTIP_KEYBINDING = "按鍵綁定: ";
 	BINDPAD_TOOLTIP_UNKNOWN_SPELL = "未知法術: ";
@@ -127,7 +127,7 @@ if(GetLocale() == "zhCN") then
 	BINDPAD_TEXT_CONFIRM_CONVERT = "您确认转换 %s \"%s\" 为 BindPad 宏?";
 	BINDPAD_TEXT_SHOW_HOTKEY = "显示绑定按键文字";
 	BINDPAD_TOOLTIP_MACRO = "宏: ";
-	BINDPAD_TOOLTIP_BINDPADMACRO = "BindPad 宏(%d): %s";
+	BINDPAD_TOOLTIP_BINDPADMACRO = "BindPad 宏: %s";
 	BINDPAD_TOOLTIP_DOWNRANK = "降低等级到: ";
 	BINDPAD_TOOLTIP_KEYBINDING = "按键绑定: ";
 	BINDPAD_TOOLTIP_UNKNOWN_SPELL = "未知法术: ";

@@ -7,7 +7,7 @@ BindPad -- Created by Tageshi
 BindPad is an addon to make KeyBindings for spells, items, and macros.
 You no longer need actionbar slots just to make Key bindings for your macores etc.
 
-BindPad addon provides many icon slots in its frame.  You can drag and drop 
+BindPad addon provides many icon slots in its frame.  You can drag and drop
 anything into one of these slots, and click the slot to set KeyBindings.
 
 
@@ -17,14 +17,14 @@ anything into one of these slots, and click the slot to set KeyBindings.
 -------------------------------------------------------------------------
 
   (1) Type /bindpad or /bp to display BindPad frame.
-      (Also you can find "Toggle BindPad" Keybinding command in standard 
+      (Also you can find "Toggle BindPad" Keybinding command in standard
        KeyBindings frame of Blizzard-UI.)
 
   (2) Open spellbook frame (p), you bag (b), or Macro Panel (/macro).
       (Also you can use three mini-icons on BindPad frame to open these windows.)
 
-  (3) Drag an spell icon, item icon, or macro icon using left button drag and 
-      drop it onto the BindPad window.  
+  (3) Drag an spell icon, item icon, or macro icon using left button drag and
+      drop it onto the BindPad window.
       (Maybe you need shift key + left button drag if action bars are locked.)
 
   (4) Now you see the icon placed on BindPad frame.  Click it,
@@ -32,7 +32,7 @@ anything into one of these slots, and click the slot to set KeyBindings.
 
   (5) Type a key to bind.  And click 'Close' button.
 
-  (6) When you want to remove icons from BindPad frame, simply drag away the icon 
+  (6) When you want to remove icons from BindPad frame, simply drag away the icon
       and press right click to delete it.
 
       Note that KeyBinding itself will not be unbinded when you delete the icon.
@@ -46,14 +46,14 @@ anything into one of these slots, and click the slot to set KeyBindings.
 
 There are four tabs on BindPad frame; 'General Slots', '<Character> Specific Slots',
 '2' and '3'. (aka. 2nd and 3rd <Character> specific slots)
-Any icons placed on 'General Slots' are for all characters of your account. 
+Any icons placed on 'General Slots' are for all characters of your account.
 Those on '<Character> Specific Slots' are for that specific character only.
 
 Note that you can use '<Character> Specific Slots' tab only after you click
 'Character Specific Key Bindings' check box at standard KeyBindings frame of Blizzard-UI.
 
 From BindPad version 1.5, you can see this checkbox on BindPad window itself too.
-(Also BindPad will inform you about 'Character Specific Key Bindings' and automatically 
+(Also BindPad will inform you about 'Character Specific Key Bindings' and automatically
 activate it for you when you click '<Character> Specific Slots' tab.)
 
 
@@ -66,7 +66,7 @@ activate it for you when you click '<Character> Specific Slots' tab.)
 which allow you to make almost unlimited number of virtual macro icons.
 
 Older versions of BindPad just let you save your limited action bar slots.
-This new BindPad will let you save your limited macro slots on the standard 
+This new BindPad will let you save your limited macro slots on the standard
 "Create Macro" panel.
 
 Usage:
@@ -75,7 +75,7 @@ Usage:
   - Right-click the "BindPad Macro" to edit macro-text.
   - ...and you can use left-click to set keybindings as usual.
 
-Note that BindPad Macro will only exist within the BindPad frame; 
+Note that BindPad Macro will only exist within the BindPad frame;
 You can drag-and-drop them within BindPad, but you cannot drop them outside.
 
 
@@ -109,13 +109,14 @@ http://wow.curse.com/downloads/wow-addons/details/q-user-key-bind-a-key-to-any-s
 mBindings
 http://www.wowinterface.com/downloads/info11614-2.html
 
+ncBindings
+http://www.wowinterface.com/downloads/fileinfo.php?id=15270
+
+ProKeybinds
+http://www.wowinterface.com/downloads/fileinfo.php?id=18841
+
 
 Visit these links for more informations about keybindings and macros.
-Strobe's Spam
-http://bsyn.co.cc/blog/?p=40
-or 
-http://bsyn.co.cc/blog/?tag=binding
-
 WoWWiki
 http://www.wowwiki.com/Making_a_macro
 
@@ -139,6 +140,44 @@ http://wow.curse.com/downloads/wow-addons/details/bind-pad.aspx
 7.  CHANGES
 -------------------------------------------------------------------------
 
+Version 2.3.8
+- Updated for 4.0.6, and fixed huge tab bug.
+
+
+Version 2.3.7
+- Added more error check to repair corrupted variables.
+
+
+Version 2.3.6
+- Added error check for when your pet is dismissed while dragging a pet skill icon.
+- Fixed error produced by corrupted variables made by the above error.
+
+
+Version 2.3.5
+- Added support for Pet skills (except Move To).
+
+
+Version 2.3.4
+- Removed (now useless) Fast Trigger option.
+  (WoW client patch 4.0.1 introduced "ability queue" system,
+   that's why we no longer need Fast Trigger.)
+- Fixed a tooltip for zhTW and zhCN localization.
+
+
+Version 2.3.3
+- Actually fixed problem for Feral Charge (Cat Form), Mangle (Cat Form) now.
+
+
+Version 2.3.1
+- Fixed problem for Feral Charge (Cat Form), Mangle (Cat Form) (it's lie!)
+- Fixed "Show Hotkeys" for standard ActionBar.
+  (May not work for other action bar addons.)
+
+
+Version 2.3.0
+- Now support Cataclysm Beta Build 12857.
+
+
 Version 2.2.4
 - Added a workaround for a strange bug of GetCurrentBindingSet() API function.
 
@@ -152,7 +191,7 @@ Version 2.2.2
 
 
 Version 2.2.1
-- Fixed a SavedVariable conversion bug introduced in 2.2.0 
+- Fixed a SavedVariable conversion bug introduced in 2.2.0
   which breaks existing keybindings.
 
 
@@ -185,13 +224,13 @@ Version 2.1.5
 
 Version 2.1.4
 - Fixed bug: Couldn't use Bronze Drake because its mount name
-  is "Bronze Drake Mount" instead of the spell name "Bronze Drake". 
+  is "Bronze Drake Mount" instead of the spell name "Bronze Drake".
 - Fixed bug: When you drop two same mount/pet icon on BindPad,
   the second one used wrong name and didn't work.
 
 
 Version 2.1.3
-- Fixed bug: When you bind different keys to same spell/item/macro for 
+- Fixed bug: When you bind different keys to same spell/item/macro for
   different profiles, unused keys were not correctly unbinded when
   switching profile; which also caused display problem of tooltip.
 
@@ -214,10 +253,10 @@ Version 2.1.1
 Version 2.1.0
 - Added three profile tabs; switching profile will
   save & load whole character specific icons and their keybindings.
-- First two of the three profile tabs are linked to Dual Spec of 
+- First two of the three profile tabs are linked to Dual Spec of
   WotLK 3.1.0, and will be automatically switched when you swtich spec.
 - The third profile tab is just an extra.
-- All character specific icons and keybindings are duplicated at the 
+- All character specific icons and keybindings are duplicated at the
   first time you use a profile.
 
 
@@ -270,7 +309,7 @@ Version 1.8.3
   bound to a BindPad Macro.
 
 Version 1.8.2
-Fixed a bug which sometimes prevented BindPad to detect correct spell 
+Fixed a bug which sometimes prevented BindPad to detect correct spell
 rank after respeccing talent or training new spells.
 
 

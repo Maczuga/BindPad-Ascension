@@ -175,7 +175,7 @@
         self:RegisterEvent("UPDATE_BINDINGS");
       </OnLoad>
       <OnClick>
-        BindPadSlot_OnClick(self, arg1);
+        BindPadSlot_OnClick(self, button, down);
       </OnClick>
       <OnDragStart>
         BindPadSlot_OnDragStart(self);
@@ -659,7 +659,7 @@
         <Scripts>
           <OnLoad>
             PanelTemplates_TabResize(self, -15);
-            getglobal(self:GetName().."HighlightTexture"):SetWidth(self:GetTextWidth() + 31);
+            _G[self:GetName().."HighlightTexture"]:SetWidth(self:GetTextWidth() + 31);
           </OnLoad>
           <OnClick>
             BindPadFrame_OnShow(self:GetID());
@@ -684,8 +684,8 @@
         <Scripts>
           <OnLoad>
             self:SetFormattedText(BINDPAD_TEXT_SPECIFIC_TAB, UnitName("player"));
-            getglobal(self:GetName().."HighlightTexture"):SetWidth(self:GetTextWidth() + 31);
-            PanelTemplates_TabResize(self, -15, nil, 150);
+            _G[self:GetName().."HighlightTexture"]:SetWidth(self:GetTextWidth() + 31);
+            PanelTemplates_TabResize(self, -15, nil, nil, 150);
           </OnLoad>
           <OnClick>
             BindPadFrame_OnShow(self:GetID());
@@ -710,8 +710,8 @@
         <Scripts>
           <OnLoad>
             self:SetText(BINDPAD_TEXT_SPECIFIC_EXTRA_TAB2);
-            getglobal(self:GetName().."HighlightTexture"):SetWidth(self:GetTextWidth() + 31);
-            PanelTemplates_TabResize(self, -15, nil, 150);
+            _G[self:GetName().."HighlightTexture"]:SetWidth(self:GetTextWidth() + 31);
+            PanelTemplates_TabResize(self, -15, nil, nil, 150);
           </OnLoad>
           <OnClick>
             BindPadFrame_OnShow(self:GetID());
@@ -736,8 +736,8 @@
         <Scripts>
           <OnLoad>
             self:SetText(BINDPAD_TEXT_SPECIFIC_EXTRA_TAB3);
-            getglobal(self:GetName().."HighlightTexture"):SetWidth(self:GetTextWidth() + 31);
-            PanelTemplates_TabResize(self, -15, nil, 150);
+            _G[self:GetName().."HighlightTexture"]:SetWidth(self:GetTextWidth() + 31);
+            PanelTemplates_TabResize(self, -15, nil, nil, 150);
           </OnLoad>
           <OnClick>
             BindPadFrame_OnShow(self:GetID());
@@ -1025,7 +1025,7 @@
             BindPadFrame_ShowHotkeysToggle(self);
           </OnClick>
           <OnLoad>
-            local text = getglobal(self:GetName().."Text");
+            local text = _G[self:GetName().."Text"];
             text:SetText(BINDPAD_TEXT_SHOW_HOTKEY);
             text:SetPoint("LEFT", self, "RIGHT", 2, 1);
           </OnLoad>

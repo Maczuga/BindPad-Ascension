@@ -20,7 +20,7 @@ BINDPAD_TEXT_KEY = "Current Key: ";
 BINDPAD_TEXT_NOTBOUND = "Not Bound";
 BINDPAD_TEXT_FAST_TRIGGER = "Fast Trigger"
 BINDPAD_TEXT_CONFIRM_BINDING = P.." is currently bound to \n"..P.."\n\nDo you want to bind "..P.." to \n"..P.."?";
-BINDPAD_TEXT_CANNOT_PLACE = "ERRPR: %s can not be placed in BindPad slot.";
+BINDPAD_TEXT_CANNOT_PLACE = "ERROR: %s can not be placed in BindPad slot.";
 BINDPAD_TEXT_CANNOT_BIND = "Cannot change key bindings while in combat."
 BINDPAD_TEXT_OBSOLATED = "Older version's savefile for BindPad is now obsolated and deleted.  Sorry for inconvenience.";
 BINDPAD_TEXT_ARE_YOU_SURE = "REALLY? ARE YOU SURE?";
@@ -29,6 +29,7 @@ BINDPAD_TEXT_CONFIRM_CONVERT = "Are you sure you want to convert this %s \"%s\" 
 BINDPAD_TEXT_SHOW_HOTKEY = "Show Hotkeys";
 BINDPAD_TEXT_TRIGGER_ON_KEYDOWN = "Trigger on Keydown";
 BINDPAD_TEXT_SAVE_ALL_KEYS = "Save All Keys";
+BINDPAD_TEXT_FOR_ALL_CHARACTERS = "For all characters";
 BINDPAD_TEXT_ERR_UNIQUENAME = "You must enter unique name for BindPadMacro.";
 BINDPAD_TEXT_ERR_SPELL_INCOMBAT = "Cannot pickup spell icon while in combat.";
 BINDPAD_TEXT_ERR_MACRO_INCOMBAT = "Cannot pickup macro icon while in combat.";
@@ -55,6 +56,8 @@ BINDPAD_TOOLTIP_SAVE_ALL_KEYS = "Automatically save&restore all keys of Blizzard
 BINDPAD_TOOLTIP_SHOW_HOTKEY =
    "Automatically shows hotkey text when you place 'BindPad'ed icons on ActionBars. Also shows keybindings in tooltips.";
 BINDPAD_TOOLTIP_TRIGGER_ON_KEYDOWN = "Keybindings made by BindPad will be triggered on pressing a key instead of releasing.";
+BINDPAD_TOOLTIP_FOR_ALL_CHARACTERS =
+   "Keybind for this icon will be carried over to all other characters.";
 BINDPAD_TOOLTIP_CREATE_MACRO = "Create BindPad Macro";
 BINDPAD_TOOLTIP_CLICK_USAGE1 = "Right click to edit macro\nLeft click to bind";
 BINDPAD_TOOLTIP_CLICK_USAGE2 = "Right click to convert\nLeft click to bind";
@@ -62,6 +65,8 @@ BINDPAD_TOOLTIP_EXTRA_PROFILE = "Profile";
 BINDPAD_TOOLTIP_FAST_TRIGGER = "Trigger on both pressing and releasing a key. It makes spamming a spell/macro key faster.";
 BINDPAD_TOOLTIP_PROFILE_CURRENTLY1 = "Currently assigned to %s";
 BINDPAD_TOOLTIP_PROFILE_CURRENTLY2 = "Currently assigned to both %s and %s";
+BINDPAD_TOOLTIP_PROFILE_CURRENTLY3 = "Currently assigned to %s, %s and %s";
+BINDPAD_TOOLTIP_PROFILE_CURRENTLY4 = "Currently assigned to 4 specs";
 BINDPAD_TOOLTIP_PROFILE_CLICK_FOR = "Click here to assign Profile%d to %s";
 BINDPAD_TOOLTIP_SHOW_MORE_SLOT = "Show more slots";
 BINDPAD_TOOLTIP_SHOW_LESS_SLOT = "Show less slots";
@@ -71,10 +76,10 @@ BINDPAD_TEXT_USAGE =
       "    /bindpad : Toggle BindPadFrame.\n" ..
       "    /bindpad list : List profiles in saved variables.\n" ..
       "    /bindpad profile PROFILEID : Switch to specific profile.\n"..
-      "    Example: /bp pr 2\n"..
+      "    Example: /bp profile 2\n"..
       "    /bindpad delete REALMNAME_CHARACTERNAME : Delete a profile for the named character.\n"..
       "    /bindpad copyfrom REALMNAME_CHARACTERNAME : Copy a profile from the named character.\n"..
-      "    Example: /bp copy Blackrock_foobar";
+      "    Example: /bp copyfrom Blackrock_foobar";
 BINDPAD_TEXT_DO_DELETE = "Successfully deleted profiles for %s.";
 BINDPAD_TEXT_DO_DELETE_ERR_CURRENT = "Cannot delete profiles for current character.";
 BINDPAD_TEXT_DO_ERR_NOT_FOUND = "Profile for %s is not found.";

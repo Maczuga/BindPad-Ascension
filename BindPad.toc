@@ -1,7 +1,9 @@
 ## Interface: 30300
 ## Title: BindPad
-## Version: 2.6.1
+## Version: 2.9.0
 ## Author: Tageshi, Maczuga
 ## Notes: BindPad - Keybinding UI for Items, Spells and Macros. Drag anything into BindPad's slot and click it to bind a key.
 ## SavedVariables: BindPadVars
+
+compat.lua
 BindPad.xml

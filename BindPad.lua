@@ -24,7 +24,7 @@ tinsert(UISpecialFrames,"BindPadBindFrame");
 
 local BINDPAD_MAXSLOTS = 42;
 local BINDPAD_TOTALSLOTS = BINDPAD_MAXSLOTS * 4;
-local BINDPAD_MAXPROFILETAB = 5;
+local BINDPAD_MAXPROFILETAB = 12;
 local BINDPAD_GENERAL_TAB = 1;
 local BINDPAD_SAVEFILE_VERSION = 1.3;
 
@@ -121,7 +121,18 @@ StaticPopupDialogs["BINDPAD_CONFIRM_CONVERT"] = {
 function BindPadFrame_OnLoad(self)
   PanelTemplates_SetNumTabs(BindPadFrame, 4);
 
-  SlashCmdList["BINDPAD"] = BindPadFrame_Toggle;
+  SlashCmdList["BINDPAD"] = function(cmd)
+    if (not cmd or cmd == "") then
+      BindPadFrame_Toggle();
+    elseif (cmd:sub(0, 2) == "pr") then
+      local id = tonumber(cmd:sub(3));
+      BindPadCore.SwitchProfile(id);
+      if BindPadFrame:IsShown() then
+        BindPadFrame_OnShow();
+      end
+    end
+  end
+
   SLASH_BINDPAD1 = "/bindpad";
   SLASH_BINDPAD2 = "/bp";
 
@@ -129,7 +140,6 @@ function BindPadFrame_OnLoad(self)
   self:RegisterEvent("SPELLS_CHANGED");
   self:RegisterEvent("ACTIONBAR_SLOT_CHANGED");
   self:RegisterEvent("UPDATE_BINDINGS");
-  self:RegisterEvent("PLAYER_TALENT_UPDATE");
 end
 
 function BindPadFrame_OnMouseDown(self)
@@ -152,8 +162,6 @@ function BindPadFrame_OnEvent(self)
     BindPadCore.InitCash();
   elseif event == "PLAYER_LOGIN" then
     BindPadCore.InitBindPad();
-  elseif event == "PLAYER_TALENT_UPDATE" then
-    BindPadCore.PlayerTalentUpdate();
   end
 end
 
@@ -619,7 +627,7 @@ function BindPadMacroPopupFrame_Update(self)
   local macroPopupIcon, macroPopupButton;
   local macroPopupOffset = FauxScrollFrame_GetOffset(BindPadMacroPopupScrollFrame);
   local index;
-  
+
   -- Icon list
   local texture;
   for i=1, NUM_MACRO_ICONS_SHOWN do
@@ -642,7 +650,7 @@ function BindPadMacroPopupFrame_Update(self)
       macroPopupButton:SetChecked(nil);
     end
   end
-  
+
   -- Scrollbar stuff
   FauxScrollFrame_Update(BindPadMacroPopupScrollFrame, ceil(numMacroIcons / NUM_ICONS_PER_ROW) , NUM_ICON_ROWS, MACRO_ICON_ROW_HEIGHT );
 end
@@ -799,18 +807,7 @@ end
 
 function BindPadProfileTab_OnShow(self)
   local normalTexture = self:GetNormalTexture();
-  local talentGroup1, talentGroup2 = BindPadCore.GetTalentGroupForProfile(self:GetID());
-  local texture = BindPadCore.GetSpecTexture(talentGroup1);
   normalTexture:SetTexture(texture);
-
-  local subIcon = getglobal(self:GetName().."SubIcon");
-  if talentGroup2 then
-    texture = BindPadCore.GetSpecTexture(talentGroup2);
-    subIcon:SetTexture(texture);
-    subIcon:Show();
-  else
-    subIcon:Hide();
-  end
 
   if BindPadCore.GetCurrentProfileNum() == self:GetID() then
     self:SetChecked(1);
@@ -827,13 +824,6 @@ function BindPadProfileTab_OnEnter(self, motion)
   local profileNum = self:GetID();
   GameTooltip:SetOwner(self, "ANCHOR_RIGHT");
   GameTooltip:SetText(BINDPAD_TOOLTIP_EXTRA_PROFILE..profileNum);
-  
-  if profileNum == BindPadCore.GetProfileForTalentGroup(1) then
-    GameTooltip:AddLine(TALENT_SPEC_PRIMARY);
-  end
-  if profileNum == BindPadCore.GetProfileForTalentGroup(2) then
-    GameTooltip:AddLine(TALENT_SPEC_SECONDARY);
-  end
   GameTooltip:Show();
 end
 
@@ -919,7 +909,7 @@ function BindPadCore.PlaceVirtualIconIntoSlot(id, drag)
   if "CLICK" ~= drag.type then
     return;
   end
-  
+
   local padSlot = BindPadCore.GetSlotInfo(id);
 
   padSlot.id = drag.id;
@@ -939,35 +929,6 @@ function BindPadCore.GetCurrentProfileNum()
     BindPadCore.profileNum = 1;
   end
   return BindPadCore.profileNum;
-end
-
-function BindPadCore.GetProfileForTalentGroup(talentGroup)
-  local character = BindPadCore.character;
-  if nil == character then
-    return nil;
-  end
-  if nil == BindPadVars[character].profileForTalentGroup[talentGroup] then
-    BindPadVars[character].profileForTalentGroup[talentGroup] = talentGroup;
-  end
-  return BindPadVars[character].profileForTalentGroup[talentGroup];
-end
-
-function BindPadCore.GetTalentGroupForProfile(profileNum)
-  local talentGroup1, talentGroup2;
-  local character = BindPadCore.character;
-  if nil == character then
-    return nil;
-  end
-  for k,v in pairs(BindPadVars[character].profileForTalentGroup) do
-    if v == profileNum then
-      if talentGroup1 then
-        talentGroup2 = k;
-      else
-        talentGroup1 = k;
-      end
-    end
-  end
-  return talentGroup1, talentGroup2;
 end
 
 function BindPadCore.GetProfileData()
@@ -1083,9 +1044,7 @@ function BindPadCore.SwitchProfile(newProfileNum, force)
 
   local oldProfile = BindPadCore.GetProfileData();
   BindPadCore.profileNum = newProfileNum;
-
-  local talentGroup = GetActiveTalentGroup();
-  BindPadVars[character].profileForTalentGroup[talentGroup] = newProfileNum;
+  BindPadVars[character].activeProfile = newProfileNum;
 
   if nil == BindPadVars[character][newProfileNum] then
     BindPadVars[character][newProfileNum] = {};
@@ -1293,7 +1252,7 @@ function BindPadCore.IsHighestRank(spellID, bookType)
       BindPadCore.IsHighestCash[spellID.."_"..bookType] = result;
       return result;
     end
-  end 
+  end
 end
 
 function BindPadCore.FindSpellIdByName(srchName, srchRank, bookType)
@@ -1302,7 +1261,7 @@ function BindPadCore.FindSpellIdByName(srchName, srchRank, bookType)
     if spellName == srchName and (nil == srchRank or spellRank == srchRank) then
       return i;
     end
-  end 
+  end
 end
 
 function BindPadCore.FindCompanionIdByName(srchName, TypeID)
@@ -1311,7 +1270,7 @@ function BindPadCore.FindCompanionIdByName(srchName, TypeID)
     if creatureName == srchName then
       return i;
     end
-  end 
+  end
 end
 
 function BindPadCore.GetBindingText(name, prefix, returnAbbr)
@@ -1374,7 +1333,7 @@ function BindPadCore.GetActionCommand(actionSlot, fastTrigger)
     end
     name,_ = GetMacroInfo(id);
   else
-    return nil; 
+    return nil;
   end
 
   if name then
@@ -1469,7 +1428,7 @@ function BindPadCore.AddActionButton(actionSlot, buttonName)
   elseif oldSlot ~= nil then
     local oldElement = BindPadCore.actionButtonNames[oldSlot];
     if type(oldElement) == "table" then
-      for k,v in pairs(oldElement) do 
+      for k,v in pairs(oldElement) do
         if v == buttonName then
           tremove(oldElement, k);
         end
@@ -1583,18 +1542,9 @@ function BindPadCore.InitBindPad()
   if nil == BindPadVars[character] then
     BindPadCore.ConvertOldSlotInfo();
   end
-  if nil == BindPadVars[character].profileForTalentGroup then
-    BindPadVars[character].profileForTalentGroup = {};
-  end
-
-  local newActiveTalentGroup = GetActiveTalentGroup();
-  local profileNum = BindPadCore.GetProfileForTalentGroup(newActiveTalentGroup)
 
   -- Make sure profileNum tab is set for current talent group.
-  BindPadCore.SwitchProfile(profileNum, true);
-
-  -- Initialize activeTalentGroup variable
-  BindPadCore.activeTalentGroup = newActiveTalentGroup;
+  BindPadCore.SwitchProfile(BindPadVars[character].activeProfile or 1, true);
 
   -- Convert SavedVariables older than BindPad 2.0.0
   for gid = 1, BINDPAD_TOTALSLOTS, 1 do
@@ -1686,7 +1636,7 @@ function BindPadCore.NewBindPadMacroName(padSlot, name)
     successFlag = true;
     for gid = 1, BINDPAD_TOTALSLOTS, 1 do
       local curSlot = BindPadCore.GetAllSlotInfo(gid);
-      if "CLICK" == curSlot.type and 
+      if "CLICK" == curSlot.type and
             name == curSlot.name and
          padSlot ~= curSlot then
         local first, last, num = strfind(name, "(%d+)$");
@@ -1801,26 +1751,6 @@ function BindPadCore.ClearCursor()
     PlaySound("igAbilityIconDrop");
   end
   drag.type = nil;
-end
-
-function BindPadCore.PlayerTalentUpdate()
-  local newActiveTalentGroup = GetActiveTalentGroup();
-  local profileNum = BindPadCore.GetProfileForTalentGroup(newActiveTalentGroup)
-
-  BindPadCore.SwitchProfile(profileNum);
-  if BindPadFrame:IsShown() then
-    BindPadFrame_OnShow();
-  end
-
-  if newActiveTalentGroup == BindPadCore.activeTalentGroup then
-    -- It is actual talent point spend.
-    local specInfoCache = BindPadCore.GetSpecInfoCache(newActiveTalentGroup);
-    if nil ~= specInfoCache then
-      specInfoCache.primaryTabIndex = nil;
-    end
-  else
-    BindPadCore.activeTalentGroup = newActiveTalentGroup;
-  end
 end
 
 function BindPadCore.GetSpecInfoCache(talentGroup)

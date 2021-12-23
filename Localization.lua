@@ -3,6 +3,7 @@ local P = NORMAL_FONT_COLOR_CODE.."%s"..FONT_COLOR_CODE_CLOSE
 
 BINDING_HEADER_BINDPAD = "BindPad";
 BINDING_NAME_TOGGLE_BINDPAD = "Toggle BindPad";
+BINDPAD_TITLE = "BindPad";
 BINDPAD_TITLE_1 = "BindPad Profile1";
 BINDPAD_TITLE_2 = "BindPad Profile2";
 BINDPAD_TITLE_3 = "BindPad Profile3";
@@ -45,17 +46,34 @@ BINDPAD_TOOLTIP_OPENSPELLBOOK = "Open Spellbook";
 BINDPAD_TOOLTIP_OPENBAG = "Open All Bags";
 BINDPAD_TOOLTIP_OPENMACRO = "Open Macros Panel";
 BINDPAD_TOOLTIP_TAB1 = "General Slots";
+BINDPAD_TOOLTIP_GENERAL_TAB_EXPLAIN = "For common icons used for every characters and every specs.";
 BINDPAD_TOOLTIP_TAB2 = "%s Specific Slots";
+BINDPAD_TOOLTIP_SPECIFIC_TAB_EXPLAIN = "For icons specific to current character and current spec.";
 BINDPAD_TOOLTIP_TAB3 = "%s Specific Slots 2nd Tab";
 BINDPAD_TOOLTIP_TAB4 = "%s Specific Slots 3rd Tab";
-BINDPAD_TOOLTIP_SHOW_HOTKEY = "Automatically shows hotkey text when you place 'BindPad'ed icons on any ActionBars.";
+BINDPAD_TOOLTIP_SHOW_HOTKEY = "Automatically shows hotkey text when you place 'BindPad'ed icons on Blizzard's ActionBars.";
 BINDPAD_TOOLTIP_TRIGGER_ON_KEYDOWN = "Keybindings made by BindPad will be triggered on pressing a key instead of releasing.";
 BINDPAD_TOOLTIP_CREATE_MACRO = "Create BindPad Macro";
 BINDPAD_TOOLTIP_CLICK_USAGE1 = "Right click to edit macro\nLeft click to bind";
 BINDPAD_TOOLTIP_CLICK_USAGE2 = "Right click to convert\nLeft click to bind";
 BINDPAD_TOOLTIP_EXTRA_PROFILE = "Profile";
-BINDPAD_TOOLTIP_FAST_TRIGGER = "Trigger on both pressing and releasing a key. It makes spamming a spell/macro key faster.";
-
+BINDPAD_TOOLTIP_PROFILE_CURRENTLY1 = "Currently assigned to %s";
+BINDPAD_TOOLTIP_PROFILE_CURRENTLY2 = "Currently assigned to both %s and %s";
+BINDPAD_TOOLTIP_PROFILE_CLICK_FOR = "Click here to assign Profile%d to %s";
+BINDPAD_TEXT_USAGE =
+   "Usage: /bindpad [command] or /bp [command] \n"..
+      "    /bindpad : Toggle BindPadFrame.\n" ..
+      "    /bindpad list : List profiles in saved variables.\n" ..
+      "    /bindpad profile PROFILEID : Switch to specific profile.\n"..
+      "    Example: /bp pr 2\n"..
+      "    /bindpad delete REALMNAME_CHARACTERNAME : Delete a profile for the named character.\n"..
+      "    /bindpad copyfrom REALMNAME_CHARACTERNAME : Copy a profile from the named character.\n"..
+      "    Example: /bp copy Blackrock_foobar";
+BINDPAD_TEXT_DO_DELETE = "Successfully deleted profiles for %s.";
+BINDPAD_TEXT_DO_DELETE_ERR_CURRENT = "Cannot delete profiles for current character.";
+BINDPAD_TEXT_DO_ERR_NOT_FOUND = "Profile for %s is not found.";
+BINDPAD_TEXT_DO_COPY = "Successfully duplicated profiles from %s.";
+BINDPAD_TEXT_DO_COPY_ERR_CURRENT = "Cannot copy profiles from same character.";
 
 --繁/簡本地化: xinsonic(xinsonic@gmail.com)
 if(GetLocale() == "zhTW") then

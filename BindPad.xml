@@ -665,8 +665,7 @@
             BindPadFrame_OnShow(self:GetID());
           </OnClick>
           <OnEnter>
-            GameTooltip:SetOwner(self, "ANCHOR_RIGHT");
-            GameTooltip:SetText(BINDPAD_TOOLTIP_TAB1, nil, nil, nil, nil, 1);
+            BindPadFrameTab_OnEnter(self);
           </OnEnter>
           <OnLeave>
             GameTooltip:Hide();
@@ -691,8 +690,7 @@
             BindPadFrame_OnShow(self:GetID());
           </OnClick>
           <OnEnter>
-            GameTooltip:SetOwner(self, "ANCHOR_RIGHT");
-            GameTooltip:SetText(format(BINDPAD_TOOLTIP_TAB2, UnitName("player")), nil, nil, nil, nil, 1);
+            BindPadFrameTab_OnEnter(self);
           </OnEnter>
           <OnLeave>
             GameTooltip:Hide();
@@ -717,8 +715,7 @@
             BindPadFrame_OnShow(self:GetID());
           </OnClick>
           <OnEnter>
-            GameTooltip:SetOwner(self, "ANCHOR_RIGHT");
-            GameTooltip:SetText(format(BINDPAD_TOOLTIP_TAB3, UnitName("player")), nil, nil, nil, nil, 1);
+            BindPadFrameTab_OnEnter(self);
           </OnEnter>
           <OnLeave>
             GameTooltip:Hide();
@@ -743,8 +740,7 @@
             BindPadFrame_OnShow(self:GetID());
           </OnClick>
           <OnEnter>
-            GameTooltip:SetOwner(self, "ANCHOR_RIGHT");
-            GameTooltip:SetText(format(BINDPAD_TOOLTIP_TAB4, UnitName("player")), nil, nil, nil, nil, 1);
+            BindPadFrameTab_OnEnter(self);
           </OnEnter>
           <OnLeave>
             GameTooltip:Hide();
@@ -755,7 +751,7 @@
         <Anchors>
           <Anchor point="TOPLEFT" relativePoint="TOPRIGHT">
             <Offset>
-              <AbsDimension x="-32" y="-65"/>
+              <AbsDimension x="-32" y="-85"/>
             </Offset>
           </Anchor>
         </Anchors>
@@ -1667,7 +1663,7 @@
     </Scripts>
   </Frame>
 
-  <Frame name="BindPadMacroTextFrame" toplevel="true" movable="true" parent="UIParent" enableMouse="true" hidden="true">
+  <Frame name="BindPadMacroFrame" toplevel="true" movable="true" parent="UIParent" enableMouse="true" hidden="true">
     <Size>
       <AbsDimension x="384" y="512"/>
     </Size>
@@ -1740,7 +1736,7 @@
         </FontString>
       </Layer>
       <Layer level="ARTWORK">
-        <Texture name="BindPadMacroTextFrameSelectedMacroBackground" file="Interface\Buttons\UI-EmptySlot">
+        <Texture name="BindPadMacroFrameSelectedMacroBackground" file="Interface\Buttons\UI-EmptySlot">
           <Size>
             <AbsDimension x="64" y="64"/>
           </Size>
@@ -1752,21 +1748,21 @@
             </Anchor>
           </Anchors>
         </Texture>
-        <FontString name="BindPadMacroTextFrameSelectedMacroName" inherits="GameFontNormalLarge" justifyH="LEFT">
+        <FontString name="BindPadMacroFrameSelectedMacroName" inherits="GameFontNormalLarge" justifyH="LEFT">
           <Size>
             <AbsDimension x="256" y="16"/>
           </Size>
           <Anchors>
-            <Anchor point="TOPLEFT" relativeTo="BindPadMacroTextFrameSelectedMacroBackground" relativePoint="TOPRIGHT">
+            <Anchor point="TOPLEFT" relativeTo="BindPadMacroFrameSelectedMacroBackground" relativePoint="TOPRIGHT">
               <Offset>
                 <AbsDimension x="-4" y="-15"/>
               </Offset>
             </Anchor>
           </Anchors>
         </FontString>
-        <FontString name="BindPadMacroTextFrameEnterMacroText" inherits="GameFontHighlightSmall" text="ENTER_MACRO_LABEL">
+        <FontString name="BindPadMacroFrameEnterMacroText" inherits="GameFontHighlightSmall" text="ENTER_MACRO_LABEL">
           <Anchors>
-            <Anchor point="TOPLEFT" relativeTo="BindPadMacroTextFrameSelectedMacroBackground" relativePoint="BOTTOMLEFT">
+            <Anchor point="TOPLEFT" relativeTo="BindPadMacroFrameSelectedMacroBackground" relativePoint="BOTTOMLEFT">
               <Offset>
                 <AbsDimension x="8" y="0"/>
               </Offset>
@@ -1776,28 +1772,28 @@
       </Layer>
     </Layers>
     <Frames>
-      <CheckButton name="BindPadMacroTextFrameSelectedMacroButton" inherits="PopupButtonTemplate" id="0">
+      <CheckButton name="BindPadMacroFrameSelectedMacroButton" inherits="PopupButtonTemplate" id="0">
         <Anchors>
-          <Anchor point="TOPLEFT" relativeTo="BindPadMacroTextFrameSelectedMacroBackground">
+          <Anchor point="TOPLEFT" relativeTo="BindPadMacroFrameSelectedMacroBackground">
             <Offset>
               <AbsDimension x="14" y="-14"/>
             </Offset>
           </Anchor>
         </Anchors>
       </CheckButton>
-      <ScrollFrame name="BindPadMacroTextFrameScrollFrame" inherits="UIPanelScrollFrameTemplate">
+      <ScrollFrame name="BindPadMacroFrameScrollFrame" inherits="UIPanelScrollFrameTemplate">
         <Size>
           <AbsDimension x="286" y="241"/>
         </Size>
         <Anchors>
-          <Anchor point="TOPLEFT" relativeTo="BindPadMacroTextFrameSelectedMacroBackground" relativePoint="BOTTOMLEFT">
+          <Anchor point="TOPLEFT" relativeTo="BindPadMacroFrameSelectedMacroBackground" relativePoint="BOTTOMLEFT">
             <Offset>
               <AbsDimension x="11" y="-18"/>
             </Offset>
           </Anchor>
         </Anchors>
         <ScrollChild>
-          <EditBox name="BindPadMacroTextFrameText" multiLine="true" letters="4000" autoFocus="false">
+          <EditBox name="BindPadMacroFrameText" multiLine="true" letters="4000" autoFocus="false">
             <Size>
               <AbsDimension x="286" y="241"/>
             </Size>
@@ -1816,32 +1812,32 @@
                 self:ClearFocus();
               </OnEscapePressed>
               <OnEditFocusLost>
-                BindPadMacroTextFrame_OnHide(self);
+                BindPadMacroFrame_OnHide(self);
               </OnEditFocusLost>
             </Scripts>
             <FontString inherits="GameFontHighlightSmall"/>
           </EditBox>
         </ScrollChild>
       </ScrollFrame>
-      <Button name="BindPadMacroTextFrameTextButton">
+      <Button name="BindPadMacroFrameTextButton">
         <Size>
           <AbsDimension x="286" y="241"/>
         </Size>
         <Anchors>
-          <Anchor point="TOPLEFT" relativeTo="BindPadMacroTextFrameText"/>
+          <Anchor point="TOPLEFT" relativeTo="BindPadMacroFrameText"/>
         </Anchors>
         <Scripts>
           <OnClick>
-            BindPadMacroTextFrameText:SetFocus();
+            BindPadMacroFrameText:SetFocus();
           </OnClick>
         </Scripts>
       </Button>
-      <Frame name="BindPadMacroTextFrameTextBackground">
+      <Frame name="BindPadMacroFrameTextBackground">
         <Size>
           <AbsDimension x="322" y="251"/>
         </Size>
         <Anchors>
-          <Anchor point="TOPLEFT" relativeTo="BindPadMacroTextFrame">
+          <Anchor point="TOPLEFT" relativeTo="BindPadMacroFrame">
             <Offset>
               <AbsDimension x="18" y="-149"/>
             </Offset>
@@ -1865,12 +1861,12 @@
           </OnLoad>
         </Scripts>
       </Frame>
-      <Button name="BindPadMacroTextFrameEditButton" inherits="UIPanelButtonTemplate" text="CHANGE_MACRO_NAME_ICON">
+      <Button name="BindPadMacroFrameEditButton" inherits="UIPanelButtonTemplate" text="CHANGE_MACRO_NAME_ICON">
         <Size>
           <AbsDimension x="170" y="22"/>
         </Size>
         <Anchors>
-          <Anchor point="TOPLEFT" relativeTo="BindPadMacroTextFrameSelectedMacroBackground">
+          <Anchor point="TOPLEFT" relativeTo="BindPadMacroFrameSelectedMacroBackground">
             <Offset>
               <AbsDimension x="51" y="-30"/>
             </Offset>
@@ -1878,16 +1874,16 @@
         </Anchors>
         <Scripts>
           <OnClick>
-            BindPadMacroTextFrameEditButton_OnClick(self);
+            BindPadMacroFrameEditButton_OnClick(self);
           </OnClick>
         </Scripts>
       </Button>
-      <Button name="BindPadMacroTextFrameTestButton" inherits="UIPanelButtonTemplate,SecureActionButtonTemplate" text="BINDPAD_TEXT_TEST">
+      <Button name="BindPadMacroFrameTestButton" inherits="UIPanelButtonTemplate,SecureActionButtonTemplate" text="BINDPAD_TEXT_TEST">
         <Size>
           <AbsDimension x="80" y="22"/>
         </Size>
         <Anchors>
-          <Anchor point="CENTER" relativeTo="BindPadMacroTextFrame" relativePoint="TOPLEFT">
+          <Anchor point="CENTER" relativeTo="BindPadMacroFrame" relativePoint="TOPLEFT">
             <Offset>
               <AbsDimension x="222" y="-422"/>
             </Offset>
@@ -1899,17 +1895,17 @@
           </OnLoad>
           <OnMouseDown>
             if not InCombatLockdown() then
-              self:SetAttribute("macrotext", BindPadMacroTextFrameText:GetText());
+              self:SetAttribute("macrotext", BindPadMacroFrameText:GetText());
             end
           </OnMouseDown>
         </Scripts>
       </Button>
-      <Button name="BindPadMacroTextFrameExitButton" inherits="UIPanelButtonTemplate" text="EXIT">
+      <Button name="BindPadMacroFrameExitButton" inherits="UIPanelButtonTemplate" text="EXIT">
         <Size>
           <AbsDimension x="80" y="22"/>
         </Size>
         <Anchors>
-          <Anchor point="CENTER" relativeTo="BindPadMacroTextFrame" relativePoint="TOPLEFT">
+          <Anchor point="CENTER" relativeTo="BindPadMacroFrame" relativePoint="TOPLEFT">
             <Offset>
               <AbsDimension x="303" y="-422"/>
             </Offset>
@@ -1926,7 +1922,7 @@
           <AbsDimension x="80" y="22"/>
         </Size>
         <Anchors>
-          <Anchor point="BOTTOMLEFT" relativeTo="BindPadMacroTextFrame">
+          <Anchor point="BOTTOMLEFT" relativeTo="BindPadMacroFrame">
             <Offset>
               <AbsDimension x="17" y="79"/>
             </Offset>
@@ -1938,9 +1934,9 @@
           </OnClick>
         </Scripts>
       </Button>
-      <Button name="BindPadMacroTextFrameCloseButton" inherits="UIPanelCloseButton">
+      <Button name="BindPadMacroFrameCloseButton" inherits="UIPanelCloseButton">
         <Anchors>
-          <Anchor point="TOPRIGHT" relativeTo="BindPadMacroTextFrame" relativePoint="TOPRIGHT">
+          <Anchor point="TOPRIGHT" relativeTo="BindPadMacroFrame" relativePoint="TOPRIGHT">
             <Offset>
               <AbsDimension x="-29" y="-8"/>
             </Offset>
@@ -1951,11 +1947,11 @@
     <Scripts>
       <OnShow>
         PlaySound("igCharacterInfoOpen");
-        BindPadMacroTextFrame_OnShow(self);
+        BindPadMacroFrame_OnShow(self);
       </OnShow>
       <OnHide>
         PlaySound("igCharacterInfoClose");
-        BindPadMacroTextFrame_OnHide(self);
+        BindPadMacroFrame_OnHide(self);
       </OnHide>
       <OnMouseWheel>
         return;

@@ -1233,7 +1233,6 @@ function BindPadCore.GetBindingText(name, prefix, returnAbbr)
   local modKeys = GetBindingText(name);
 
   if returnAbbr and _G.ElvUI then
-    print(name, modKeys)
     modKeys = gsub(modKeys, "CTRL[-]", "C");
     modKeys = gsub(modKeys, "SHIFT[-]", "S");
     modKeys = gsub(modKeys, "ALT[-]", "A");
@@ -1241,7 +1240,6 @@ function BindPadCore.GetBindingText(name, prefix, returnAbbr)
     modKeys = gsub(modKeys, "(%l)-(%l)-", "%1%2-");
     modKeys = gsub(modKeys, "NUMPAD", "NUM");
     modKeys = gsub(modKeys, "-?Num Pad ", "NUM");
-    print(modKeys)
   elseif returnAbbr then
     modKeys = gsub(modKeys, "CTRL", "c");
     modKeys = gsub(modKeys, "SHIFT", "s");

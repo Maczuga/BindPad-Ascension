@@ -257,7 +257,7 @@
             <Anchor point="BOTTOMRIGHT"/>
           </Anchors>
         </Texture>
-        <FontString name="BindPadFrameTitleText" inherits="GameFontNormal" text="BINDPAD_TITLE_1">
+        <FontString name="BindPadFrameTitleText" inherits="GameFontNormal" text="BINDPAD_TITLE_PROFILE">
           <Anchors>
             <Anchor point="TOP" relativeTo="$parent">
               <Offset>
@@ -684,13 +684,13 @@
           <OnLoad>
             self:SetFormattedText(BINDPAD_TEXT_SPECIFIC_TAB, UnitName("player"));
             _G[self:GetName().."HighlightTexture"]:SetWidth(self:GetTextWidth() + 31);
-            PanelTemplates_TabResize(self, -15, nil, nil, 150);
+            PanelTemplates_TabResize(self, -15, nil, 150);
           </OnLoad>
           <OnClick>
             BindPadFrame_OnShow(self:GetID());
           </OnClick>
           <OnEnter>
-            BindPadFrameTab_OnEnter(self);
+	    BindPadFrameTab_OnEnter(self);
           </OnEnter>
           <OnLeave>
             GameTooltip:Hide();
@@ -709,13 +709,13 @@
           <OnLoad>
             self:SetText(BINDPAD_TEXT_SPECIFIC_EXTRA_TAB2);
             _G[self:GetName().."HighlightTexture"]:SetWidth(self:GetTextWidth() + 31);
-            PanelTemplates_TabResize(self, -15, nil, nil, 150);
+            PanelTemplates_TabResize(self, -15, nil, 150);
           </OnLoad>
           <OnClick>
             BindPadFrame_OnShow(self:GetID());
           </OnClick>
           <OnEnter>
-            BindPadFrameTab_OnEnter(self);
+	    BindPadFrameTab_OnEnter(self);
           </OnEnter>
           <OnLeave>
             GameTooltip:Hide();
@@ -734,13 +734,13 @@
           <OnLoad>
             self:SetText(BINDPAD_TEXT_SPECIFIC_EXTRA_TAB3);
             _G[self:GetName().."HighlightTexture"]:SetWidth(self:GetTextWidth() + 31);
-            PanelTemplates_TabResize(self, -15, nil, nil, 150);
+            PanelTemplates_TabResize(self, -15, nil, 150);
           </OnLoad>
           <OnClick>
             BindPadFrame_OnShow(self:GetID());
           </OnClick>
           <OnEnter>
-            BindPadFrameTab_OnEnter(self);
+	    BindPadFrameTab_OnEnter(self);
           </OnEnter>
           <OnLeave>
             GameTooltip:Hide();
@@ -1053,7 +1053,7 @@
             BindPadFrame_TriggerOnKeydownToggle(self);
           </OnClick>
           <OnLoad>
-            local text = getglobal(self:GetName().."Text");
+            local text = _G[self:GetName().."Text"];
             text:SetText(BINDPAD_TEXT_TRIGGER_ON_KEYDOWN);
             text:SetPoint("LEFT", self, "RIGHT", 2, 1);
           </OnLoad>
@@ -1072,13 +1072,13 @@
         BindPadFrame_OnLoad(self);
       </OnLoad>
       <OnMouseDown>
-        BindPadFrame_OnMouseDown(self);
+        BindPadFrame_OnMouseDown(self, button);
       </OnMouseDown>
       <OnEnter>
         BindPadFrame_OnEnter(self);
       </OnEnter>
       <OnEvent>
-        BindPadFrame_OnEvent(self);
+        BindPadFrame_OnEvent(self, event, ...);
       </OnEvent>
       <OnShow>
         PlaySound("igCharacterInfoOpen");
@@ -1231,7 +1231,7 @@
             BindPadBindFrame_FastTriggerToggle(self);
           </OnClick>
           <OnLoad>
-            local text = getglobal(self:GetName().."Text");
+            local text = _G[self:GetName().."Text"];
             text:SetText(BINDPAD_TEXT_FAST_TRIGGER);
             text:SetPoint("LEFT", self, "RIGHT", 2, 1);
           </OnLoad>
@@ -1416,7 +1416,7 @@
         </Scripts>
         <FontString inherits="ChatFontNormal"/>
       </EditBox>
-      <ScrollFrame name="BindPadMacroPopupScrollFrame" inherits="ClassTrainerListScrollFrameTemplate">
+      <ScrollFrame name="BindPadMacroPopupScrollFrame" inherits="FauxScrollFrameTemplate">
         <Size>
           <AbsDimension x="296" y="195"/>
         </Size>
@@ -1736,7 +1736,7 @@
         </FontString>
       </Layer>
       <Layer level="ARTWORK">
-        <Texture name="BindPadMacroFrameSelectedMacroBackground" file="Interface\Buttons\UI-EmptySlot">
+        <Texture name="BindPadMacroFrameSlotBackground" file="Interface\Buttons\UI-EmptySlot">
           <Size>
             <AbsDimension x="64" y="64"/>
           </Size>
@@ -1748,12 +1748,12 @@
             </Anchor>
           </Anchors>
         </Texture>
-        <FontString name="BindPadMacroFrameSelectedMacroName" inherits="GameFontNormalLarge" justifyH="LEFT">
+        <FontString name="BindPadMacroFrameSlotName" inherits="GameFontNormalLarge" justifyH="LEFT">
           <Size>
             <AbsDimension x="256" y="16"/>
           </Size>
           <Anchors>
-            <Anchor point="TOPLEFT" relativeTo="BindPadMacroFrameSelectedMacroBackground" relativePoint="TOPRIGHT">
+            <Anchor point="TOPLEFT" relativeTo="BindPadMacroFrameSlotBackground" relativePoint="TOPRIGHT">
               <Offset>
                 <AbsDimension x="-4" y="-15"/>
               </Offset>
@@ -1762,7 +1762,7 @@
         </FontString>
         <FontString name="BindPadMacroFrameEnterMacroText" inherits="GameFontHighlightSmall" text="ENTER_MACRO_LABEL">
           <Anchors>
-            <Anchor point="TOPLEFT" relativeTo="BindPadMacroFrameSelectedMacroBackground" relativePoint="BOTTOMLEFT">
+            <Anchor point="TOPLEFT" relativeTo="BindPadMacroFrameSlotBackground" relativePoint="BOTTOMLEFT">
               <Offset>
                 <AbsDimension x="8" y="0"/>
               </Offset>
@@ -1772,9 +1772,9 @@
       </Layer>
     </Layers>
     <Frames>
-      <CheckButton name="BindPadMacroFrameSelectedMacroButton" inherits="PopupButtonTemplate" id="0">
+      <CheckButton name="BindPadMacroFrameSlotButton" inherits="PopupButtonTemplate" id="0">
         <Anchors>
-          <Anchor point="TOPLEFT" relativeTo="BindPadMacroFrameSelectedMacroBackground">
+          <Anchor point="TOPLEFT" relativeTo="BindPadMacroFrameSlotBackground">
             <Offset>
               <AbsDimension x="14" y="-14"/>
             </Offset>
@@ -1786,7 +1786,7 @@
           <AbsDimension x="286" y="241"/>
         </Size>
         <Anchors>
-          <Anchor point="TOPLEFT" relativeTo="BindPadMacroFrameSelectedMacroBackground" relativePoint="BOTTOMLEFT">
+          <Anchor point="TOPLEFT" relativeTo="BindPadMacroFrameSlotBackground" relativePoint="BOTTOMLEFT">
             <Offset>
               <AbsDimension x="11" y="-18"/>
             </Offset>
@@ -1799,7 +1799,7 @@
             </Size>
             <Scripts>
               <OnTextChanged>
-                local scrollBar = getglobal(self:GetParent():GetName().."ScrollBar")
+                local scrollBar = _G[self:GetParent():GetName().."ScrollBar"]
                 local min;
                 local max;
                 min, max = scrollBar:GetMinMaxValues();
@@ -1866,7 +1866,7 @@
           <AbsDimension x="170" y="22"/>
         </Size>
         <Anchors>
-          <Anchor point="TOPLEFT" relativeTo="BindPadMacroFrameSelectedMacroBackground">
+          <Anchor point="TOPLEFT" relativeTo="BindPadMacroFrameSlotBackground">
             <Offset>
               <AbsDimension x="51" y="-30"/>
             </Offset>

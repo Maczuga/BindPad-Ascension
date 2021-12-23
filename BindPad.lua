@@ -10,10 +10,9 @@ local NUM_MACRO_ICONS_SHOWN = 20;
 local NUM_ICONS_PER_ROW = 5;
 local NUM_ICON_ROWS = 4;
 local MACRO_ICON_ROW_HEIGHT = 36;
-local MACRO_ICON_FILENAMES = {};
 
 -- Avoid taint of official lua codes.
-local i, j;
+local i, j, _;
 
 -- Register BindPad frame to be controlled together with
 -- other panels in standard UI.
@@ -29,10 +28,10 @@ local BINDPAD_MAXPROFILETAB = 12;
 local BINDPAD_GENERAL_TAB = 1;
 local BINDPAD_SAVEFILE_VERSION = 1.3;
 
-local TYPE_ITEM = TYPE_ITEM;
-local TYPE_SPELL = TYPE_SPELL;
-local TYPE_MACRO = TYPE_MACRO;
-local TYPE_BPMACRO = TYPE_BPMACRO;
+local TYPE_ITEM = "ITEM";
+local TYPE_SPELL = "SPELL";
+local TYPE_MACRO = "MACRO";
+local TYPE_BPMACRO = "CLICK";
 
 local BindPadPetAction = {
   [PET_ACTION_ATTACK] = SLASH_PET_ATTACK1,
@@ -164,8 +163,6 @@ function BindPadFrame_OnLoad(self)
   self:RegisterEvent("ACTIONBAR_SLOT_CHANGED");
   self:RegisterEvent("UPDATE_BINDINGS");
   -- self:RegisterEvent("CVAR_UPDATE");
-
-  GetMacroIcons(MACRO_ICON_FILENAMES);
 end
 
 function BindPadFrame_OnMouseDown(self, button)
@@ -224,7 +221,7 @@ function BindPadFrame_OnShow(id)
   if BindPadVars.tab == 1 then
     BindPadFrameTitleText:SetText(BINDPAD_TITLE);
   else
-    BindPadFrameTitleText:SetText(_G["BINDPAD_TITLE_" .. BindPadCore.GetCurrentProfileNum()]);
+    BindPadFrameTitleText:SetText(_G["BINDPAD_TITLE_PROFILE"] .. " " .. BindPadCore.GetCurrentProfileNum());
   end
 
   PanelTemplates_SetTab(BindPadFrame, BindPadVars.tab);
@@ -449,7 +446,7 @@ function BindPadSlot_OnUpdateBindings(self)
   end
 end
 
-function BindPadSlot_OnClick(self, button, down)
+function BindPadSlot_OnClick(self, button)
   if button == "RightButton" then
     if BindPadCore.CursorHasIcon() then
       BindPadCore.ClearCursor();
@@ -635,7 +632,7 @@ function BindPadMacroPopupFrame_Open(self)
 
     padSlot.type = TYPE_BPMACRO;
     padSlot.name = BindPadCore.NewBindPadMacroName(padSlot, "1");
-    padSlot.texture = BindPadCore.GetMacroIconInfo(1);
+    padSlot.texture = GetMacroIconInfo(1);
     padSlot.macrotext = "";
     padSlot.action = BindPadCore.CreateBindPadMacroAction(padSlot);
     BindPadSlot_UpdateState(self)
@@ -682,7 +679,7 @@ function BindPadMacroPopupFrame_OnHide(self)
 end
 
 function BindPadMacroPopupFrame_Update(self)
-  local numMacroIcons = #MACRO_ICON_FILENAMES;
+  local numMacroIcons = GetNumMacroIcons();
   local macroPopupIcon, macroPopupButton;
   local macroPopupOffset = FauxScrollFrame_GetOffset(BindPadMacroPopupScrollFrame) or 0;
   local index;
@@ -693,7 +690,7 @@ function BindPadMacroPopupFrame_Update(self)
     macroPopupIcon = _G["BindPadMacroPopupButton"..i.."Icon"];
     macroPopupButton = _G["BindPadMacroPopupButton"..i];
     index = (macroPopupOffset * NUM_ICONS_PER_ROW) + i;
-    texture = BindPadCore.GetMacroIconInfo(index);
+    texture = GetMacroIconInfo(index);
     if (index <= numMacroIcons and texture) then
       macroPopupIcon:SetTexture(texture);
       macroPopupButton:Show();
@@ -777,7 +774,7 @@ function BindPadMacroPopupButton_OnClick(self)
   -- Clear out selected texture
   BindPadMacroPopupFrame.selectedIconTexture = nil;
 
-  BindPadCore.selectedSlot.texture = BindPadCore.GetMacroIconInfo(BindPadMacroPopupFrame.selectedIcon);
+  BindPadCore.selectedSlot.texture = GetMacroIconInfo(BindPadMacroPopupFrame.selectedIcon);
   BindPadSlot_UpdateState(BindPadCore.selectedSlotButton);
 
   BindPadMacroPopupOkayButton_Update(self);
@@ -807,8 +804,8 @@ function BindPadMacroFrame_Open(self)
     return;
   end
 
-  BindPadMacroFrameSelectedMacroName:SetText(padSlot.name);
-  BindPadMacroFrameSelectedMacroButtonIcon:SetTexture(padSlot.texture);
+  BindPadMacroFrameSlotName:SetText(padSlot.name);
+  BindPadMacroFrameSlotButtonIcon:SetTexture(padSlot.texture);
   BindPadMacroFrameText:SetText(padSlot.macrotext);
   if not InCombatLockdown() then
     BindPadMacroFrameTestButton:SetAttribute("macrotext", padSlot.macrotext);
@@ -1006,21 +1003,40 @@ function BindPadCore.PlaceVirtualIconIntoSlot(id, drag)
 end
 
 function BindPadCore.CheckCorruptedSlot(padSlot)
-  if padSlot.type == TYPE_ITEM and padSlot.linktext and padSlot.name and
-    padSlot.texture and padSlot.action then return false; end
-  if padSlot.type == TYPE_MACRO and padSlot.name and padSlot.texture and
-    padSlot.action then return false; end
-  if padSlot.type == TYPE_SPELL and padSlot.bookType and padSlot.name and
-    padSlot.texture and padSlot.action then return false; end
-  if padSlot.type == TYPE_BPMACRO and padSlot.name and padSlot.texture and
-    padSlot.macrotext and padSlot.action then return false; end
+  if padSlot.type == TYPE_ITEM and
+    padSlot.linktext and
+    padSlot.name and
+    padSlot.texture and
+    padSlot.action then
+    return false;
+  end
+  if padSlot.type == TYPE_MACRO and
+    padSlot.name and
+    padSlot.texture and
+    padSlot.action then
+    return false;
+  end
+  if padSlot.type == TYPE_SPELL and
+    padSlot.bookType and
+    padSlot.name and
+    padSlot.texture and
+    padSlot.action then
+    return false;
+  end
+  if padSlot.type == TYPE_BPMACRO and
+    padSlot.name and
+    padSlot.texture and
+    padSlot.macrotext and
+    padSlot.action then
+    return false;
+  end
 
   padSlot.action = nil;
   padSlot.bookType = nil;
   padSlot.id = nil;
   padSlot.linktext = nil;
   padSlot.macrotext = nil;
-  padSlot.name = nil;
+  padSlot.name = "";
   padSlot.rank = nil;
   padSlot.texture = nil;
   padSlot.type = nil;
@@ -1220,7 +1236,7 @@ function BindPadCore.SwitchProfile(newProfileNum, force)
     end
   end
 
-  BindPadFrameTitleText:SetText(_G["BINDPAD_TITLE_"..newProfileNum]);
+  BindPadFrameTitleText:SetText(_G["BINDPAD_TITLE_PROFILE"] .. " " .. newProfileNum);
 end
 
 function BindPadCore.CanPickupSlot(self)
@@ -1698,6 +1714,7 @@ function BindPadCore.InitBindPad()
 end
 
 function BindPadCore.UpdateMacroText(padSlot)
+  BindPadCore.CheckCorruptedSlot(padSlot);
   if TYPE_ITEM == padSlot.type then
     BindPadKey:SetAttribute("*type-ITEM "..padSlot.name, "item");
     BindPadKey:SetAttribute("*item-ITEM "..padSlot.name, padSlot.name);
@@ -1959,15 +1976,5 @@ function BindPadCore.DoSetProfile(arg)
   BindPadCore.SwitchProfile(id);
   if BindPadFrame:IsShown() then
     BindPadFrame_OnShow();
-  end
-end
-
-function BindPadCore.GetMacroIconInfo(index)
-  if (not index) then return; end
-  local texture = MACRO_ICON_FILENAMES[index];
-  if (texture) then
-    return "INTERFACE\\ICONS\\" .. texture;
-  else
-    return nil;
   end
 end

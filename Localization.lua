@@ -34,6 +34,7 @@ BINDPAD_TEXT_ERR_SPELL_INCOMBAT = "Cannot pickup spell icon while in combat.";
 BINDPAD_TEXT_ERR_MACRO_INCOMBAT = "Cannot pickup macro icon while in combat.";
 BINDPAD_TEXT_ERR_BINDPADMACRO_INCOMBAT = "Cannot edit BindPadMacro while in combat.";
 BINDPAD_TEXT_CREATE_PROFILETAB = "Created new profile.  All icons are duplicated now.";
+BINDPAD_TEXT_SLOTS_SHOWN = "%d Slots shown";
 BINDPAD_TOOLTIP_MACRO = "Macro: ";
 BINDPAD_TOOLTIP_COMPANION = "Companion: ";
 BINDPAD_TOOLTIP_EQUIPMENTSET = "Equipmentset: ";
@@ -62,6 +63,9 @@ BINDPAD_TOOLTIP_FAST_TRIGGER = "Trigger on both pressing and releasing a key. It
 BINDPAD_TOOLTIP_PROFILE_CURRENTLY1 = "Currently assigned to %s";
 BINDPAD_TOOLTIP_PROFILE_CURRENTLY2 = "Currently assigned to both %s and %s";
 BINDPAD_TOOLTIP_PROFILE_CLICK_FOR = "Click here to assign Profile%d to %s";
+BINDPAD_TOOLTIP_SHOW_MORE_SLOT = "Show more slots";
+BINDPAD_TOOLTIP_SHOW_LESS_SLOT = "Show less slots";
+
 BINDPAD_TEXT_USAGE =
    "Usage: /bindpad [command] or /bp [command] \n"..
       "    /bindpad : Toggle BindPadFrame.\n" ..

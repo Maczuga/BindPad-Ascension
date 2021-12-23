@@ -187,6 +187,12 @@ http://wow.curse.com/downloads/wow-addons/details/bind-pad.aspx
 7.  CHANGES
 -------------------------------------------------------------------------
 
+Version 2.5.6
+- Show Hotkeys option is back and now more efficient.
+- Show Hotkeys now supports every actionbar addons as far as I know.
+- "Show Keys in Tooltip" is included in Show HotKeys option for now.
+
+
 Version 2.5.5
 - Fixed a display bug: "Show Keys in Tooltip" toggle option was
   going to be unchecked at login.

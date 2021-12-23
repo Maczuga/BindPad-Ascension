@@ -2,14 +2,8 @@
   <Script file="Localization.lua"/>
   <Script file="BindPad.lua"/>
 
-  <Button name="BindPadMacro" inherits="SecureActionButtonTemplate">
-  </Button>
-  <Button name="BindPadKey" inherits="SecureActionButtonTemplate">
-  </Button>
-  <Button name="BindPadFastMacro" inherits="SecureActionButtonTemplate">
-  </Button>
-  <Button name="BindPadFastKey" inherits="SecureActionButtonTemplate">
-  </Button>
+  <Button name="BindPadMacro" inherits="SecureActionButtonTemplate"></Button>
+  <Button name="BindPadKey" inherits="SecureActionButtonTemplate"></Button>
 
   <Button name="BindPadUIPanelButtonTemplate" virtual="true">
     <ButtonText name="$parentText"/>
@@ -36,7 +30,7 @@
         </Texture>
       </Layer>
       <Layer level="OVERLAY">
-        <Texture name="$parentSubIcon" hidden="true">
+        <Texture name="$parentSubIcon" parentKey="subIcon" hidden="true">
           <Size x="20" y="20"/>
           <Anchors>
             <Anchor point="BOTTOMRIGHT">
@@ -72,26 +66,26 @@
     </Size>
     <Layers>
       <Layer level="BACKGROUND">
-        <Texture name="$parentIcon"/>
+        <Texture name="$parentIcon" parentKey="icon" />
       </Layer>
       <Layer level="ARTWORK">
-        <FontString name="$parentHotKey" inherits="NumberFontNormalSmallGray" justifyH="RIGHT">
+        <FontString name="$parentHotKey" inherits="NumberFontNormalSmallGray" parentKey="hotkey" justifyH="RIGHT">
           <Size>
-            <AbsDimension x="36" y="10"/>
+            <AbsDimension x="40" y="10"/>
           </Size>
           <Anchors>
             <Anchor point="TOPLEFT">
               <Offset>
-                <AbsDimension x="-2" y="-2"/>
+                <AbsDimension x="-1" y="-3"/>
               </Offset>
             </Anchor>
           </Anchors>
         </FontString>
       </Layer>
       <Layer level="OVERLAY">
-        <FontString name="$parentName" inherits="GameFontHighlightSmallOutline">
+        <FontString name="$parentName" inherits="GameFontHighlightSmallOutline" parentKey="name">
           <Size>
-            <AbsDimension x="36" y="10"/>
+            <AbsDimension x="40" y="10"/>
           </Size>
           <Anchors>
             <Anchor point="BOTTOM">
@@ -101,7 +95,7 @@
             </Anchor>
           </Anchors>
         </FontString>
-        <Texture name="$parentBorder" file="Interface\Buttons\UI-ActionButton-Border" hidden="true" alphaMode="ADD">
+        <Texture name="$parentBorder" file="Interface\Buttons\UI-ActionButton-Border" parentKey="border" hidden="true" alphaMode="ADD">
           <Size>
             <AbsDimension x="62" y="62"/>
           </Size>
@@ -133,7 +127,7 @@
 
   <Button name="BindPadSlotTemplate" inherits="BindPadIconTemplate" virtual="true">
     <Frames>
-      <Button name="$parentAddButton" alpha="0.7">
+      <Button name="$parentAddButton" parentKey="addbutton" alpha="0.7">
         <Size>
           <AbsDimension x="16" y="16"/>
         </Size>
@@ -202,16 +196,6 @@
     <Size>
       <AbsDimension x="384" y="512"/>
     </Size>
-    <Anchors>
-      <Anchor point="TOPLEFT">
-        <Offset>
-          <AbsDimension x="0" y="-104"/>
-        </Offset>
-      </Anchor>
-    </Anchors>
-    <HitRectInsets>
-      <AbsInset left="0" right="34" top="0" bottom="75"/>
-    </HitRectInsets>
     <Layers>
       <Layer level="BACKGROUND">
         <Texture name="$parentPortrait" file="Interface\MacroFrame\MacroFrame-Icon">
@@ -272,385 +256,108 @@
       </Layer>
     </Layers>
     <Frames>
-      <CheckButton name="BindPadSlot1" inherits="BindPadSlotTemplate" id="1">
+      <ScrollFrame name="BindPadScrollFrame" inherits="UIPanelScrollFrameTemplate">
+        <Size x="292" y="321"/>
         <Anchors>
-          <Anchor point="TOPLEFT">
-            <Offset>
-              <AbsDimension x="42" y="-83"/>
-            </Offset>
-          </Anchor>
+          <Anchor point="TOPLEFT" x="24" y="-75"/>
         </Anchors>
-      </CheckButton>
-      <CheckButton name="BindPadSlot2" inherits="BindPadSlotTemplate" id="2">
-        <Anchors>
-          <Anchor point="LEFT" relativeTo="BindPadSlot1" relativePoint="RIGHT">
-            <Offset>
-              <AbsDimension x="13" y="0"/>
-            </Offset>
-          </Anchor>
-        </Anchors>
-      </CheckButton>
-      <CheckButton name="BindPadSlot3" inherits="BindPadSlotTemplate" id="3">
-        <Anchors>
-          <Anchor point="LEFT" relativeTo="BindPadSlot2" relativePoint="RIGHT">
-            <Offset>
-              <AbsDimension x="13" y="0"/>
-            </Offset>
-          </Anchor>
-        </Anchors>
-      </CheckButton>
-      <CheckButton name="BindPadSlot4" inherits="BindPadSlotTemplate" id="4">
-        <Anchors>
-          <Anchor point="LEFT" relativeTo="BindPadSlot3" relativePoint="RIGHT">
-            <Offset>
-              <AbsDimension x="13" y="0"/>
-            </Offset>
-          </Anchor>
-        </Anchors>
-      </CheckButton>
-      <CheckButton name="BindPadSlot5" inherits="BindPadSlotTemplate" id="5">
-        <Anchors>
-          <Anchor point="LEFT" relativeTo="BindPadSlot4" relativePoint="RIGHT">
-            <Offset>
-              <AbsDimension x="13" y="0"/>
-            </Offset>
-          </Anchor>
-        </Anchors>
-      </CheckButton>
-      <CheckButton name="BindPadSlot6" inherits="BindPadSlotTemplate" id="6">
-        <Anchors>
-          <Anchor point="LEFT" relativeTo="BindPadSlot5" relativePoint="RIGHT">
-            <Offset>
-              <AbsDimension x="13" y="0"/>
-            </Offset>
-          </Anchor>
-        </Anchors>
-      </CheckButton>
-      <CheckButton name="BindPadSlot7" inherits="BindPadSlotTemplate" id="7">
-        <Anchors>
-          <Anchor point="TOP" relativeTo="BindPadSlot1" relativePoint="BOTTOM">
-            <Offset>
-              <AbsDimension x="0" y="-10"/>
-            </Offset>
-          </Anchor>
-        </Anchors>
-      </CheckButton>
-      <CheckButton name="BindPadSlot8" inherits="BindPadSlotTemplate" id="8">
-        <Anchors>
-          <Anchor point="LEFT" relativeTo="BindPadSlot7" relativePoint="RIGHT">
-            <Offset>
-              <AbsDimension x="13" y="0"/>
-            </Offset>
-          </Anchor>
-        </Anchors>
-      </CheckButton>
-      <CheckButton name="BindPadSlot9" inherits="BindPadSlotTemplate" id="9">
-        <Anchors>
-          <Anchor point="LEFT" relativeTo="BindPadSlot8" relativePoint="RIGHT">
-            <Offset>
-              <AbsDimension x="13" y="0"/>
-            </Offset>
-          </Anchor>
-        </Anchors>
-      </CheckButton>
-      <CheckButton name="BindPadSlot10" inherits="BindPadSlotTemplate" id="10">
-        <Anchors>
-          <Anchor point="LEFT" relativeTo="BindPadSlot9" relativePoint="RIGHT">
-            <Offset>
-              <AbsDimension x="13" y="0"/>
-            </Offset>
-          </Anchor>
-        </Anchors>
-      </CheckButton>
-      <CheckButton name="BindPadSlot11" inherits="BindPadSlotTemplate" id="11">
-        <Anchors>
-          <Anchor point="LEFT" relativeTo="BindPadSlot10" relativePoint="RIGHT">
-            <Offset>
-              <AbsDimension x="13" y="0"/>
-            </Offset>
-          </Anchor>
-        </Anchors>
-      </CheckButton>
-      <CheckButton name="BindPadSlot12" inherits="BindPadSlotTemplate" id="12">
-        <Anchors>
-          <Anchor point="LEFT" relativeTo="BindPadSlot11" relativePoint="RIGHT">
-            <Offset>
-              <AbsDimension x="13" y="0"/>
-            </Offset>
-          </Anchor>
-        </Anchors>
-      </CheckButton>
-      <CheckButton name="BindPadSlot13" inherits="BindPadSlotTemplate" id="13">
-        <Anchors>
-          <Anchor point="TOP" relativeTo="BindPadSlot7" relativePoint="BOTTOM">
-            <Offset>
-              <AbsDimension x="0" y="-10"/>
-            </Offset>
-          </Anchor>
-        </Anchors>
-      </CheckButton>
-      <CheckButton name="BindPadSlot14" inherits="BindPadSlotTemplate" id="14">
-        <Anchors>
-          <Anchor point="LEFT" relativeTo="BindPadSlot13" relativePoint="RIGHT">
-            <Offset>
-              <AbsDimension x="13" y="0"/>
-            </Offset>
-          </Anchor>
-        </Anchors>
-      </CheckButton>
-      <CheckButton name="BindPadSlot15" inherits="BindPadSlotTemplate" id="15">
-        <Anchors>
-          <Anchor point="LEFT" relativeTo="BindPadSlot14" relativePoint="RIGHT">
-            <Offset>
-              <AbsDimension x="13" y="0"/>
-            </Offset>
-          </Anchor>
-        </Anchors>
-      </CheckButton>
-      <CheckButton name="BindPadSlot16" inherits="BindPadSlotTemplate" id="16">
-        <Anchors>
-          <Anchor point="LEFT" relativeTo="BindPadSlot15" relativePoint="RIGHT">
-            <Offset>
-              <AbsDimension x="13" y="0"/>
-            </Offset>
-          </Anchor>
-        </Anchors>
-      </CheckButton>
-      <CheckButton name="BindPadSlot17" inherits="BindPadSlotTemplate" id="17">
-        <Anchors>
-          <Anchor point="LEFT" relativeTo="BindPadSlot16" relativePoint="RIGHT">
-            <Offset>
-              <AbsDimension x="13" y="0"/>
-            </Offset>
-          </Anchor>
-        </Anchors>
-      </CheckButton>
-      <CheckButton name="BindPadSlot18" inherits="BindPadSlotTemplate" id="18">
-        <Anchors>
-          <Anchor point="LEFT" relativeTo="BindPadSlot17" relativePoint="RIGHT">
-            <Offset>
-              <AbsDimension x="13" y="0"/>
-            </Offset>
-          </Anchor>
-        </Anchors>
-      </CheckButton>
-
-      <CheckButton name="BindPadSlot19" inherits="BindPadSlotTemplate" id="19">
-        <Anchors>
-          <Anchor point="TOP" relativeTo="BindPadSlot13" relativePoint="BOTTOM">
-            <Offset>
-              <AbsDimension x="0" y="-10"/>
-            </Offset>
-          </Anchor>
-        </Anchors>
-      </CheckButton>
-      <CheckButton name="BindPadSlot20" inherits="BindPadSlotTemplate" id="20">
-        <Anchors>
-          <Anchor point="LEFT" relativeTo="BindPadSlot19" relativePoint="RIGHT">
-            <Offset>
-              <AbsDimension x="13" y="0"/>
-            </Offset>
-          </Anchor>
-        </Anchors>
-      </CheckButton>
-      <CheckButton name="BindPadSlot21" inherits="BindPadSlotTemplate" id="21">
-        <Anchors>
-          <Anchor point="LEFT" relativeTo="BindPadSlot20" relativePoint="RIGHT">
-            <Offset>
-              <AbsDimension x="13" y="0"/>
-            </Offset>
-          </Anchor>
-        </Anchors>
-      </CheckButton>
-      <CheckButton name="BindPadSlot22" inherits="BindPadSlotTemplate" id="22">
-        <Anchors>
-          <Anchor point="LEFT" relativeTo="BindPadSlot21" relativePoint="RIGHT">
-            <Offset>
-              <AbsDimension x="13" y="0"/>
-            </Offset>
-          </Anchor>
-        </Anchors>
-      </CheckButton>
-      <CheckButton name="BindPadSlot23" inherits="BindPadSlotTemplate" id="23">
-        <Anchors>
-          <Anchor point="LEFT" relativeTo="BindPadSlot22" relativePoint="RIGHT">
-            <Offset>
-              <AbsDimension x="13" y="0"/>
-            </Offset>
-          </Anchor>
-        </Anchors>
-      </CheckButton>
-      <CheckButton name="BindPadSlot24" inherits="BindPadSlotTemplate" id="24">
-        <Anchors>
-          <Anchor point="LEFT" relativeTo="BindPadSlot23" relativePoint="RIGHT">
-            <Offset>
-              <AbsDimension x="13" y="0"/>
-            </Offset>
-          </Anchor>
-        </Anchors>
-      </CheckButton>
-      <CheckButton name="BindPadSlot25" inherits="BindPadSlotTemplate" id="25">
-        <Anchors>
-          <Anchor point="TOP" relativeTo="BindPadSlot19" relativePoint="BOTTOM">
-            <Offset>
-              <AbsDimension x="0" y="-10"/>
-            </Offset>
-          </Anchor>
-        </Anchors>
-      </CheckButton>
-      <CheckButton name="BindPadSlot26" inherits="BindPadSlotTemplate" id="26">
-        <Anchors>
-          <Anchor point="LEFT" relativeTo="BindPadSlot25" relativePoint="RIGHT">
-            <Offset>
-              <AbsDimension x="13" y="0"/>
-            </Offset>
-          </Anchor>
-        </Anchors>
-      </CheckButton>
-      <CheckButton name="BindPadSlot27" inherits="BindPadSlotTemplate" id="27">
-        <Anchors>
-          <Anchor point="LEFT" relativeTo="BindPadSlot26" relativePoint="RIGHT">
-            <Offset>
-              <AbsDimension x="13" y="0"/>
-            </Offset>
-          </Anchor>
-        </Anchors>
-      </CheckButton>
-      <CheckButton name="BindPadSlot28" inherits="BindPadSlotTemplate" id="28">
-        <Anchors>
-          <Anchor point="LEFT" relativeTo="BindPadSlot27" relativePoint="RIGHT">
-            <Offset>
-              <AbsDimension x="13" y="0"/>
-            </Offset>
-          </Anchor>
-        </Anchors>
-      </CheckButton>
-      <CheckButton name="BindPadSlot29" inherits="BindPadSlotTemplate" id="29">
-        <Anchors>
-          <Anchor point="LEFT" relativeTo="BindPadSlot28" relativePoint="RIGHT">
-            <Offset>
-              <AbsDimension x="13" y="0"/>
-            </Offset>
-          </Anchor>
-        </Anchors>
-      </CheckButton>
-      <CheckButton name="BindPadSlot30" inherits="BindPadSlotTemplate" id="30">
-        <Anchors>
-          <Anchor point="LEFT" relativeTo="BindPadSlot29" relativePoint="RIGHT">
-            <Offset>
-              <AbsDimension x="13" y="0"/>
-            </Offset>
-          </Anchor>
-        </Anchors>
-      </CheckButton>
-      <CheckButton name="BindPadSlot31" inherits="BindPadSlotTemplate" id="31">
-        <Anchors>
-          <Anchor point="TOP" relativeTo="BindPadSlot25" relativePoint="BOTTOM">
-            <Offset>
-              <AbsDimension x="0" y="-10"/>
-            </Offset>
-          </Anchor>
-        </Anchors>
-      </CheckButton>
-      <CheckButton name="BindPadSlot32" inherits="BindPadSlotTemplate" id="32">
-        <Anchors>
-          <Anchor point="LEFT" relativeTo="BindPadSlot31" relativePoint="RIGHT">
-            <Offset>
-              <AbsDimension x="13" y="0"/>
-            </Offset>
-          </Anchor>
-        </Anchors>
-      </CheckButton>
-      <CheckButton name="BindPadSlot33" inherits="BindPadSlotTemplate" id="33">
-        <Anchors>
-          <Anchor point="LEFT" relativeTo="BindPadSlot32" relativePoint="RIGHT">
-            <Offset>
-              <AbsDimension x="13" y="0"/>
-            </Offset>
-          </Anchor>
-        </Anchors>
-      </CheckButton>
-      <CheckButton name="BindPadSlot34" inherits="BindPadSlotTemplate" id="34">
-        <Anchors>
-          <Anchor point="LEFT" relativeTo="BindPadSlot33" relativePoint="RIGHT">
-            <Offset>
-              <AbsDimension x="13" y="0"/>
-            </Offset>
-          </Anchor>
-        </Anchors>
-      </CheckButton>
-      <CheckButton name="BindPadSlot35" inherits="BindPadSlotTemplate" id="35">
-        <Anchors>
-          <Anchor point="LEFT" relativeTo="BindPadSlot34" relativePoint="RIGHT">
-            <Offset>
-              <AbsDimension x="13" y="0"/>
-            </Offset>
-          </Anchor>
-        </Anchors>
-      </CheckButton>
-      <CheckButton name="BindPadSlot36" inherits="BindPadSlotTemplate" id="36">
-        <Anchors>
-          <Anchor point="LEFT" relativeTo="BindPadSlot35" relativePoint="RIGHT">
-            <Offset>
-              <AbsDimension x="13" y="0"/>
-            </Offset>
-          </Anchor>
-        </Anchors>
-      </CheckButton>
-      <CheckButton name="BindPadSlot37" inherits="BindPadSlotTemplate" id="37">
-        <Anchors>
-          <Anchor point="TOP" relativeTo="BindPadSlot31" relativePoint="BOTTOM">
-            <Offset>
-              <AbsDimension x="0" y="-10"/>
-            </Offset>
-          </Anchor>
-        </Anchors>
-      </CheckButton>
-      <CheckButton name="BindPadSlot38" inherits="BindPadSlotTemplate" id="38">
-        <Anchors>
-          <Anchor point="LEFT" relativeTo="BindPadSlot37" relativePoint="RIGHT">
-            <Offset>
-              <AbsDimension x="13" y="0"/>
-            </Offset>
-          </Anchor>
-        </Anchors>
-      </CheckButton>
-      <CheckButton name="BindPadSlot39" inherits="BindPadSlotTemplate" id="39">
-        <Anchors>
-          <Anchor point="LEFT" relativeTo="BindPadSlot38" relativePoint="RIGHT">
-            <Offset>
-              <AbsDimension x="13" y="0"/>
-            </Offset>
-          </Anchor>
-        </Anchors>
-      </CheckButton>
-      <CheckButton name="BindPadSlot40" inherits="BindPadSlotTemplate" id="40">
-        <Anchors>
-          <Anchor point="LEFT" relativeTo="BindPadSlot39" relativePoint="RIGHT">
-            <Offset>
-              <AbsDimension x="13" y="0"/>
-            </Offset>
-          </Anchor>
-        </Anchors>
-      </CheckButton>
-      <CheckButton name="BindPadSlot41" inherits="BindPadSlotTemplate" id="41">
-        <Anchors>
-          <Anchor point="LEFT" relativeTo="BindPadSlot40" relativePoint="RIGHT">
-            <Offset>
-              <AbsDimension x="13" y="0"/>
-            </Offset>
-          </Anchor>
-        </Anchors>
-      </CheckButton>
-      <CheckButton name="BindPadSlot42" inherits="BindPadSlotTemplate" id="42">
-        <Anchors>
-          <Anchor point="LEFT" relativeTo="BindPadSlot41" relativePoint="RIGHT">
-            <Offset>
-              <AbsDimension x="13" y="0"/>
-            </Offset>
-          </Anchor>
-        </Anchors>
-      </CheckButton>
+        <Layers>
+          <Layer level="ARTWORK">
+            <Texture name="$parentTop" file="Interface\PaperDollInfoFrame\UI-Character-ScrollBar">
+              <Size x="31" y="102"/>
+              <Anchors>
+          <Anchor point="TOPLEFT" relativePoint="TOPRIGHT" x="-2" y="5"/>
+              </Anchors>
+              <TexCoords left="0" right="0.484375" top="0" bottom="0.4"/>
+            </Texture>
+            <Texture name="$parentBottom" file="Interface\PaperDollInfoFrame\UI-Character-ScrollBar">
+              <Size x="31" y="106"/>
+              <Anchors>
+          <Anchor point="BOTTOMLEFT" relativePoint="BOTTOMRIGHT" x="-2" y="-2"/>
+              </Anchors>
+              <TexCoords left="0.515625" right="1.0" top="0" bottom="0.4140625"/>
+            </Texture>
+            <Texture name="$parentMiddle" file="Interface\PaperDollInfoFrame\UI-Character-ScrollBar">
+              <Size x="31" y="1"/>
+              <Anchors>
+          <Anchor point="TOP" relativeTo="$parentTop" relativePoint="BOTTOM"/>
+          <Anchor point="BOTTOM" relativeTo="$parentBottom" relativePoint="TOP"/>
+              </Anchors>
+              <TexCoords left="0" right="0.484375" top=".75" bottom="1.0"/>
+            </Texture>
+          </Layer>
+        </Layers>
+        <Scripts>
+          <OnLoad function="ScrollFrame_OnLoad"/>
+        </Scripts>
+        <ScrollChild>
+          <Frame name="BindPadSlotButtonContainer">
+            <Size x="285" y="10"/>
+            <Anchors>
+              <Anchor point="TOPLEFT"/>
+            </Anchors>
+            <Frames>
+              <Frame name="BindPadScrollFrameFooter">
+          <Size x="285" y="36"/>
+          <Layers>
+            <Layer level="ARTWORK">
+              <FontString name="BindPadScrollFrameNumber" inherits="GameFontNormal" justifyH="RIGHT" text="42 Slots shown">
+                <Size>
+            <AbsDimension x="102" y="0"/>
+                </Size>
+                <Anchors>
+            <Anchor point="BOTTOMRIGHT" relativePoint="BOTTOMRIGHT" x="-64" y="12"/>
+                </Anchors>
+              </FontString>
+            </Layer>
+          </Layers>
+          <Frames>
+            <Button name="BindPadShowLessSlotButton">
+              <Size x="32" y="32"/>
+              <Anchors>
+                <Anchor point="BOTTOMRIGHT" relativePoint="BOTTOMRIGHT" x="-32" y="0"/>
+              </Anchors>
+              <Scripts>
+                <OnClick function="BindPadShowLessSlotButton_OnClick"/>
+                <OnEnter>
+            GameTooltip:SetOwner(self, "ANCHOR_RIGHT");
+            GameTooltip:SetText(BINDPAD_TOOLTIP_SHOW_LESS_SLOT, nil, nil, nil, nil, 1);
+                </OnEnter>
+                <OnLeave>
+            GameTooltip:Hide();
+                </OnLeave>
+              </Scripts>
+              <NormalTexture file="Interface\Buttons\UI-SpellbookIcon-PrevPage-Up"/>
+              <PushedTexture file="Interface\Buttons\UI-SpellbookIcon-PrevPage-Down"/>
+              <DisabledTexture file="Interface\Buttons\UI-SpellbookIcon-PrevPage-Disabled"/>
+              <HighlightTexture file="Interface\Buttons\UI-Common-MouseHilight" alphaMode="ADD"/>
+            </Button>
+            <Button name="BindPadShowMoreSlotButton">
+              <Size x="32" y="32"/>
+              <Anchors>
+                <Anchor point="BOTTOMRIGHT" relativePoint="BOTTOMRIGHT" x="0" y="0"/>
+              </Anchors>
+              <Scripts>
+                <OnClick function="BindPadShowMoreSlotButton_OnClick"/>
+                <OnEnter>
+            GameTooltip:SetOwner(self, "ANCHOR_RIGHT");
+            GameTooltip:SetText(BINDPAD_TOOLTIP_SHOW_MORE_SLOT, nil, nil, nil, nil, 1);
+                </OnEnter>
+                <OnLeave>
+            GameTooltip:Hide();
+                </OnLeave>
+              </Scripts>
+              <NormalTexture file="Interface\Buttons\UI-SpellbookIcon-NextPage-Up"/>
+              <PushedTexture file="Interface\Buttons\UI-SpellbookIcon-NextPage-Down"/>
+              <DisabledTexture file="Interface\Buttons\UI-SpellbookIcon-NextPage-Disabled"/>
+              <HighlightTexture file="Interface\Buttons\UI-Common-MouseHilight" alphaMode="ADD"/>
+            </Button>
+          </Frames>
+              </Frame>
+            </Frames>
+          </Frame>
+        </ScrollChild>
+      </ScrollFrame>
       <Button name="$parentTab1" inherits="TabButtonTemplate" text="BINDPAD_TEXT_GENERAL_TAB" id="1">
         <Anchors>
           <Anchor point="TOPLEFT">
@@ -1069,7 +776,7 @@
           </OnLeave>
         </Scripts>
       </CheckButton>
-      <CheckButton name="$parentShowKeyInTooltipButton" inherits="UICheckButtonTemplate">
+      <CheckButton name="$parentShowHotkeyButton" inherits="UICheckButtonTemplate">
         <Size>
           <AbsDimension x="20" y="20"/>
         </Size>
@@ -1085,7 +792,7 @@
         </HitRectInsets>
         <Scripts>
           <OnClick>
-            BindPadFrame_ShowKeyInTooltipToggle(self);
+            BindPadFrame_ShowHotkeyToggle(self);
           </OnClick>
           <OnLoad>
             local text = _G[self:GetName().."Text"];
@@ -1795,6 +1502,12 @@
             </Offset>
           </Anchor>
         </Anchors>
+        <Scripts>
+          <OnLoad>
+            self.scrollBarHideable = true;
+            ScrollFrame_OnLoad(self);
+          </OnLoad>
+        </Scripts>
         <ScrollChild>
           <EditBox name="BindPadMacroFrameText" multiLine="true" letters="4000" autoFocus="false">
             <Size>
@@ -1802,14 +1515,7 @@
             </Size>
             <Scripts>
               <OnTextChanged>
-                local scrollBar = _G[self:GetParent():GetName().."ScrollBar"]
-                local min;
-                local max;
-                min, max = scrollBar:GetMinMaxValues();
-                if ( max > 0 and (self.max ~= max) ) then
-                  self.max = max;
-                  scrollBar:SetValue(max);
-                end
+                ScrollingEdit_OnTextChanged(self, self:GetParent());
               </OnTextChanged>
               <OnEscapePressed>
                 self:ClearFocus();
@@ -1817,8 +1523,12 @@
               <OnEditFocusLost>
                 BindPadMacroFrame_OnHide(self);
               </OnEditFocusLost>
+              <OnCursorChanged function="ScrollingEdit_OnCursorChanged"/>
+              <OnUpdate>
+                ScrollingEdit_OnUpdate(self, elapsed, self:GetParent());
+              </OnUpdate>
             </Scripts>
-            <FontString inherits="GameFontHighlightSmall"/>
+            <FontString inherits="ChatFontNormal"/>
           </EditBox>
         </ScrollChild>
       </ScrollFrame>

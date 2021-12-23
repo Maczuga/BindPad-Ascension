@@ -44,17 +44,64 @@ anything into one of these slots, and click the slot to set KeyBindings.
 3. HOW TO USE TABS
 -------------------------------------------------------------------------
 
-There are four tabs on BindPad frame; 'General Slots', '<Character> Specific Slots',
-'2' and '3'. (aka. 2nd and 3rd <Character> specific slots)
-Any icons placed on 'General Slots' are for all characters of your account.
-Those on '<Character> Specific Slots' are for that specific character only.
+3.1. SLOTS TABS
 
-Note that you can use '<Character> Specific Slots' tab only after you click
+There are four tabs called Slots Tab on the top of BindPad frame
+(like Blizzard's Macro frame).
+
+[General Slots] is for common icons used for every characters and every specs.
+[<Character> Specific Slots] is for icons specific to current character
+and current spec.
+
+[2] and [3] (aka. 2nd and 3rd <Character> specific slots) will act
+in the same way as [<Character> Specific Slots].
+
+
+Note that you can use [<Character> Specific Slots] tab only after you click
 'Character Specific Key Bindings' check box at standard KeyBindings frame of Blizzard-UI.
-
 From BindPad version 1.5, you can see this checkbox on BindPad window itself too.
 (Also BindPad will inform you about 'Character Specific Key Bindings' and automatically
-activate it for you when you click '<Character> Specific Slots' tab.)
+activate it for you when you click [<Character> Specific Slots] tab.)
+
+
+3.2. PROFILE TABS
+
+There are another three tabs called Profile Tab on the side of BindPad frame.
+(like Blizzard's Talent frame)
+
+Different Profile can hold different contents in [<Character> Specific Slots].
+You can click a Profile tab to switch current Profile, and your choice of
+Profile is saved for each Talent specs and automatically reverted to former
+profile when you change talent spec. If you choose same Profile for both
+talent specs this automatic change will not happen.
+
+Note that [General Slots] tab is not effected by Profile change, as all
+contents of [General Slots] tab is common for all characters AND all specs.
+If you change Profile while [General Slots] tab is shown,
+BindPad will automatically shows [<Character> Specific Slots] tab of
+specified Profile.
+
+
+3.3. CAN I SWITCH PROFILE IN COMBAT? ON STANCE CHANGE?
+
+No, you cannot.
+
+
+If you need different skills binded for different stances/forms,
+simply use the stance condition to decide on what skill to use.
+
+Example: /cast [stance:1/2] Berserker Stance; [stance:3] Intercept
+
+Where [Stance:1/2] is conditioning the macro for you to be in battle stance
+or defensive stance and [stance:3] is conditioning you to be in berserker stance.
+This works for all classes with stances (Including rogues for stealth [stance:1]
+and shadow dance [stance:2] or none of the previous [stance:0]).
+
+Druid example: /cast [stance:1] Bash; [nostance:1] Healing Touch
+
+[nostance] = Caster, [stance:1] = Bear, [stance:2] = Aquatic, [stance:3] = Cat,
+[stance:4] = Travel, [stance:5] = Tree/Moonkin if available else Flight,
+[stance:6] = Flight if Tree/Moonkin is not available.
 
 
 
@@ -139,6 +186,70 @@ http://wow.curse.com/downloads/wow-addons/details/bind-pad.aspx
 -------------------------------------------------------------------------
 7.  CHANGES
 -------------------------------------------------------------------------
+
+Version 2.5.5
+- Fixed a display bug: "Show Keys in Tooltip" toggle option was
+  going to be unchecked at login.
+
+
+Version 2.5.4
+- Fixed Lua error related to AddSpellByID at Mastery tooltip.
+- Internal change: replaced StaticPopup_Show with BindPad's own function.
+
+
+Version 2.5.3
+- Added new feature: Show Keys in Tooltip option;
+  which adds a text to describe keybindings in tooltip
+  for spells, items, and macros on ActionBar and Spellbook.
+  (to compensate removal of Show HotKey option.)
+
+
+Version 2.5.2
+- Added new feature: SaveAllKeys option;
+  which automatically saves all keys of Blizzard's Key Bindings Interface
+  for current BindPad Profile and restore them when switching Profiles.
+- Reduced memory consumption by removing empty tables.
+
+
+Version 2.5.1
+- Fixed "script run too long" error.
+- Removed broken Show-Hotkeys option which was pertially broken from long before.
+- Added support for "Assist" pet skill.
+- Added support for battlepet icon.
+- Fixed bug: Was unable to pick up class spells from BindPad slot.
+- Fixed bug: shift-clicking an icon no longer insert itemlink to BindPad Macro frame
+  when you meant to insert the itemlink into an active Chat Frame instead.
+
+
+Version 2.5.0
+- Updated for Mist of Pandaria beta 15799.
+
+
+Version 2.4.1
+- Updated for patch 4.3 .
+
+
+Version 2.4.0
+- Fixed bug: Tooltip for Fishing and First Aid was not correctly shown.
+- Added new slash sub-commands to manage profiles.
+  /bindpad list : List profiles in saved variables.
+  /bindpad delete REALMNAME_CHARACTERNAME : Delete a profile for REALMNAME_CHARACTERNAME.
+  /bindpad copyfrom REALMNAME_CHARACTERNAME : Copy a profile from REALMNAME_CHARACTERNAME.
+
+
+Version 2.3.9
+- Updated for 4.1 .
+- Added more detailed tooltip text for Profile tabs and Slots tabs.
+- BindPad will automatically shows [<Character> Specific Slots] tab
+  of specified Profile when you click Profile Tab.
+  (To reduce unnecessary confusion, because contents of
+   the General Slots tab are common for every Profiles anyway.)
+- Trigger on Keydown checkbox is now hidden.
+  (It now follows Blizzard's "Cast action keybinds on key down"
+   in Combat option.)
+- Added support for "Move To" pet skill.
+- Added more description about tabs in readme.txt
+
 
 Version 2.3.8
 - Updated for 4.0.6, and fixed huge tab bug.

@@ -1010,9 +1010,9 @@
           <AbsDimension x="20" y="20"/>
         </Size>
         <Anchors>
-          <Anchor point="BOTTOMLEFT" relativeTo="$parentOpenBagButton" relativePoint="BOTTOMRIGHT">
+          <Anchor point="BOTTOMLEFT" relativeTo="$parent" relativePoint="BOTTOMLEFT">
             <Offset>
-              <AbsDimension x="8" y="16"/>
+              <AbsDimension x="8" y="50"/>
             </Offset>
           </Anchor>
         </Anchors>
@@ -1042,9 +1042,9 @@
           <AbsDimension x="20" y="20"/>
         </Size>
         <Anchors>
-          <Anchor point="BOTTOMLEFT" relativeTo="$parentOpenBagButton" relativePoint="BOTTOMRIGHT">
+          <Anchor point="BOTTOMLEFT" relativeTo="$parentSaveAllKeysButton" relativePoint="BOTTOMLEFT">
             <Offset>
-              <AbsDimension x="8" y="0"/>
+              <AbsDimension x="0" y="-20"/>
             </Offset>
           </Anchor>
         </Anchors>
@@ -1074,9 +1074,9 @@
           <AbsDimension x="20" y="20"/>
         </Size>
         <Anchors>
-          <Anchor point="BOTTOMLEFT" relativeTo="$parentOpenBagButton" relativePoint="BOTTOMRIGHT">
+          <Anchor point="BOTTOMLEFT" relativeTo="$parentTriggerOnKeydownButton" relativePoint="BOTTOMLEFT">
             <Offset>
-              <AbsDimension x="8" y="0"/>
+              <AbsDimension x="0" y="-20"/>
             </Offset>
           </Anchor>
         </Anchors>
@@ -1089,12 +1089,12 @@
           </OnClick>
           <OnLoad>
             local text = _G[self:GetName().."Text"];
-            text:SetText(BINDPAD_TEXT_SHOW_KEY_IN_TOOLTIP);
+            text:SetText(BINDPAD_TEXT_SHOW_HOTKEY);
             text:SetPoint("LEFT", self, "RIGHT", 2, 1);
           </OnLoad>
           <OnEnter>
             GameTooltip:SetOwner(self, "ANCHOR_RIGHT");
-            GameTooltip:SetText(BINDPAD_TOOLTIP_SHOW_KEY_IN_TOOLTIP, nil, nil, nil, nil, 1);
+            GameTooltip:SetText(BINDPAD_TOOLTIP_SHOW_HOTKEY, nil, nil, nil, nil, 1);
           </OnEnter>
           <OnLeave>
             GameTooltip:Hide();
@@ -1247,38 +1247,6 @@
           </OnClick>
         </Scripts>
       </Button>
-      <CheckButton name="$parentFastTriggerButton" inherits="UICheckButtonTemplate">
-        <Size>
-          <AbsDimension x="20" y="20"/>
-        </Size>
-        <Anchors>
-          <Anchor point="BOTTOMLEFT" relativeTo="$parent" relativePoint="BOTTOMLEFT">
-            <Offset>
-              <AbsDimension x="20" y="20"/>
-            </Offset>
-          </Anchor>
-        </Anchors>
-        <HitRectInsets>
-          <AbsInset left="0" right="-60" top="0" bottom="0"/>
-        </HitRectInsets>
-        <Scripts>
-          <OnClick>
-            BindPadBindFrame_FastTriggerToggle(self);
-          </OnClick>
-          <OnLoad>
-            local text = _G[self:GetName().."Text"];
-            text:SetText(BINDPAD_TEXT_FAST_TRIGGER);
-            text:SetPoint("LEFT", self, "RIGHT", 2, 1);
-          </OnLoad>
-          <OnEnter>
-            GameTooltip:SetOwner(self, "ANCHOR_RIGHT");
-            GameTooltip:SetText(BINDPAD_TOOLTIP_FAST_TRIGGER, nil, nil, nil, nil, 1);
-          </OnEnter>
-          <OnLeave>
-            GameTooltip:Hide();
-          </OnLeave>
-        </Scripts>
-      </CheckButton>
     </Frames>
 
     <Scripts>

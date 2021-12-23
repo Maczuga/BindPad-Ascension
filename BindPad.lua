@@ -80,10 +80,14 @@ function BindPadFrame_OnLoad(self)
   SLASH_BINDPAD1 = "/bindpad";
   SLASH_BINDPAD2 = "/bp";
 
-    self:RegisterEvent("UPDATE_BINDINGS");
+  self:RegisterEvent("UPDATE_BINDINGS");
   self:RegisterEvent("PLAYER_LOGIN");
   self:RegisterEvent("VARIABLES_LOADED");
   -- self:RegisterEvent("CVAR_UPDATE");
+  self:RegisterEvent("ACTIONBAR_SLOT_CHANGED");
+  self:RegisterEvent("UPDATE_VEHICLE_ACTIONBAR");
+  self:RegisterEvent("UPDATE_OVERRIDE_ACTIONBAR");
+  self:RegisterEvent("ACTIONBAR_PAGE_CHANGED");
 end
 
 function BindPadFrame_OnMouseDown(self, button)
@@ -101,6 +105,11 @@ function BindPadFrame_OnEvent(self, event, ...)
 
   if event == "UPDATE_BINDINGS" then
     BindPadCore.DoSaveAllKeys();
+    BindPadCore.UpdateAllHotkeys();
+  elseif event == "ACTIONBAR_SLOT_CHANGED" then
+    BindPadCore.UpdateHotKey(arg1);
+  elseif event == "UPDATE_VEHICLE_ACTIONBAR" or event == "UPDATE_OVERRIDE_ACTIONBAR" or event == "ACTIONBAR_PAGE_CHANGED" then
+    BindPadCore.UpdateAllHotkeys();
   elseif event == "PLAYER_LOGIN" then
     BindPadCore.InitBindPad(event);
   elseif event == "VARIABLES_LOADED" then
@@ -215,9 +224,6 @@ function BindPadBindFrame_Update()
   else
     BindPadBindFrameKey:SetText(BINDPAD_TEXT_KEY..BINDPAD_TEXT_NOTBOUND);
   end
-
-  -- Update Fast Trigger button
-  BindPadBindFrameFastTriggerButton:SetChecked(BindPadCore.selectedSlot.fastTrigger);
 end
 
 function BindPadBindFrame_OnKeyDown(self, keyOrButton)
@@ -355,13 +361,6 @@ end
 function BindPadBindFrame_OnHide(self)
   -- Close the confirmation dialog frame if it is still open.
   BindPadCore.CancelDialogs();
-end
-
-function BindPadBindFrame_FastTriggerToggle(self)
-  BindPadCore.selectedSlot.fastTrigger = (self:GetChecked() == 1);
-  BindPadCore.UpdateMacroText(BindPadCore.selectedSlot);
-  BindPadSlot_UpdateState(BindPadCore.selectedSlotButton);
-  BindPadBindFrame_Update();
 end
 
 function BindPadSlot_OnUpdateBindings(self)
@@ -556,7 +555,6 @@ function BindPadMacroPopupFrame_Open(self)
   BindPadMacroPopup_oldPadSlot.name = padSlot.name;
   BindPadMacroPopup_oldPadSlot.texture = padSlot.texture;
   BindPadMacroPopup_oldPadSlot.type = padSlot.type;
-  BindPadMacroPopup_oldPadSlot.fastTrigger = padSlot.fastTrigger;
 
   if nil == padSlot.type then
     newFlag = true;
@@ -687,7 +685,6 @@ function BindPadMacroPopupFrame_CancelEdit()
 
   padSlot.texture = BindPadMacroPopup_oldPadSlot.texture;
   padSlot.type = BindPadMacroPopup_oldPadSlot.type;
-  padSlot.fastTrigger = BindPadMacroPopup_oldPadSlot.fastTrigger;
 
   BindPadMacroPopupFrame.selectedIcon = nil;
   BindPadSlot_UpdateState(BindPadCore.selectedSlotButton)
@@ -797,6 +794,7 @@ end
 
 function BindPadProfileTab_OnShow(self)
   local normalTexture = self:GetNormalTexture();
+  local texture = BindPadCore.GetSpecTexture(1);
   normalTexture:SetTexture(texture);
 
   if BindPadCore.GetCurrentProfileNum() == self:GetID() then
@@ -929,7 +927,6 @@ function BindPadCore.PlaceVirtualIconIntoSlot(id, drag)
   padSlot.macrotext = drag.macrotext;
   padSlot.name = BindPadCore.NewBindPadMacroName(padSlot, drag.name);
   padSlot.texture = drag.texture;
-  padSlot.fastTrigger = drag.fastTrigger;
   padSlot.action = BindPadCore.CreateBindPadMacroAction(padSlot);
 
   drag.type = nil;
@@ -1147,7 +1144,6 @@ function BindPadCore.PickupSlot(self, id, isOnDragStart)
     drag.name = padSlot.name;
     drag.texture = padSlot.texture;
     drag.type = padSlot.type;
-    drag.fastTrigger = padSlot.fastTrigger;
 
     BindPadCore.UpdateCursor();
     PlaySound("igAbilityIconPickup");
@@ -1340,10 +1336,14 @@ function BindPadCore.InitBindPad(event)
   if event == "VARIABLES_LOADED" then
     BindPadCore.flag_VARIABLES_LOADED = true;
   end
-  if not BindPadCore.flag_PLAYER_LOGIN or not BindPadCore.flag_VARIABLES_LOADED then
-    return;
+  if BindPadCore.flag_PLAYER_LOGIN and BindPadCore.flag_VARIABLES_LOADED then
+    BindPadCore.InitProfile();
+    BindPadCore.InitHotKeyList();
+    BindPadCore.UpdateAllHotkeys();
   end
+end
 
+function BindPadCore.InitProfile()
   BindPadCore.character = "PROFILE_"..GetRealmName().."_"..UnitName("player");
   local character = BindPadCore.character;
 
@@ -1470,16 +1470,14 @@ function BindPadCore.UpdateCursor()
 end
 
 function BindPadCore.CreateBindPadMacroAction(padSlot)
-  local prefix = padSlot.fastTrigger and "BindPadFast" or "BindPad";
-
   if TYPE_ITEM == padSlot.type then
-    return "CLICK " .. prefix .. "Key:ITEM "..padSlot.name;
+    return "CLICK BindPadKey:ITEM "..padSlot.name;
   elseif TYPE_SPELL == padSlot.type then
-    return "CLICK " .. prefix .. "Key:SPELL "..padSlot.name;
+    return "CLICK BindPadKey:SPELL "..padSlot.name;
   elseif TYPE_MACRO == padSlot.type then
-    return "CLICK " .. prefix .. "Key:MACRO "..padSlot.name;
+    return "CLICK BindPadKey:MACRO "..padSlot.name;
   elseif TYPE_BPMACRO == padSlot.type then
-    return "CLICK " .. prefix .. "Macro:"..padSlot.name;
+    return "CLICK BindPadMacro:"..padSlot.name;
   end
 
   return nil;
@@ -1537,6 +1535,35 @@ end
 --   end
 -- end
 
+function BindPadCore.GetSpecInfoCache(talentGroup)
+  if nil == talentGroup then
+    return nil;
+  end
+  if nil == BindPadCore.specInfoCache[talentGroup] then
+    BindPadCore.specInfoCache[talentGroup] = {};
+  end
+  local specInfoCache = BindPadCore.specInfoCache[talentGroup];
+  if nil == specInfoCache.primaryTabIndex then
+    TalentFrame_UpdateSpecInfoCache(specInfoCache, false, false, talentGroup);
+  end
+  return specInfoCache;
+end
+
+function BindPadCore.GetSpecTexture(talentGroup)
+  local specInfoCache = BindPadCore.GetSpecInfoCache(talentGroup);
+  if nil == specInfoCache then
+    return nil;
+  else
+    local primaryTabIndex = specInfoCache.primaryTabIndex;
+    if ( primaryTabIndex > 0 ) then
+      -- the spec had a primary tab
+      return specInfoCache[primaryTabIndex].icon;
+    else
+      return TALENT_HYBRID_ICON;
+    end
+  end
+end
+
 function BindPadCore.SetTriggerOnKeydown()
   if BindPadVars.triggerOnKeydown then
     -- Triggered on pressing a key instead of releasing.
@@ -1581,7 +1608,7 @@ function BindPadCore.DoCopyFrom(arg)
           BindPadVars[backupname] = BindPadVars[BindPadCore.character];
       end
       BindPadVars[BindPadCore.character] = BindPadCore.DuplicateTable(BindPadVars[name]);
-      BindPadCore.InitBindPad();
+      BindPadCore.InitProfile();
 
       if BindPadFrame:IsShown() then
         BindPadFrame_OnShow();
@@ -1620,6 +1647,7 @@ end
 
 function BindPadFrame_ShowKeyInTooltipToggle(self)
   BindPadVars.showKeyInTooltipFlag = (self:GetChecked() == 1);
+  BindPadCore.UpdateAllHotkeys();
 end
 
 function BindPadCore.DoSaveAllKeys()
@@ -1868,3 +1896,131 @@ function BindPadCore.CancelDialogs()
     dialog.cancelbutton:Click();
   end
 end
+
+BindPadCore.HotKeyList = {};
+BindPadCore.CreateFrameQueue = {};
+function BindPadCore.InitHotKeyList()
+  for k, button in pairs(ActionBarButtonEventsFrame.frames) do
+    BindPadCore.CreateFrameQueue[button:GetName()] = "ActionBarButtonTemplate";
+  end
+end
+
+function BindPadCore.AddHotKey(name, GetAction)
+  if BindPadCore.HotKeyList[name] then return; end
+
+  local button = _G[name];
+  if not button then return; end
+
+  local hotkey = _G[name .. "HotKey"];
+  if not hotkey then return; end
+
+  local info = {};
+  info.GetAction = GetAction;
+  info.button = button;
+  info.hotkey = hotkey;
+
+  info.bphotkey = button:CreateFontString(name .. "BPHotKey", "ARTWORK", "NumberFontNormalSmallGray");
+  info.bphotkey:SetJustifyH("RIGHT")
+  info.bphotkey:SetSize(36, 10)
+  info.bphotkey:SetPoint("TOPLEFT", button, "TOPLEFT", -1, -3)
+  info.bphotkey:Show();
+
+  -- Copying the range indicator color change.
+  hooksecurefunc(info.hotkey, "SetVertexColor", function(self, red, green, blue)
+    return info.bphotkey:SetVertexColor(red, green, blue)
+  end);
+
+  BindPadCore.HotKeyList[name] = info;
+end
+
+function BindPadCore.AddAllHotKeys()
+  for buttonname, buttontype in pairs(BindPadCore.CreateFrameQueue) do
+    if buttontype == "ActionBarButtonTemplate" then
+      BindPadCore.AddHotKey(buttonname, function(info)
+        return info.button.action
+      end);
+    elseif buttontype == "LibActionButton" then
+      BindPadCore.AddHotKey(buttonname, function(info)
+        return select(2, info.button:GetAction())
+      end);
+    end
+  end
+  table.wipe(BindPadCore.CreateFrameQueue);
+end
+
+function BindPadCore.UpdateAllHotkeys()
+  BindPadCore.AddAllHotKeys();
+  for name, info in pairs(BindPadCore.HotKeyList) do
+    BindPadCore.OverwriteHotKey(info);
+  end
+end
+
+function BindPadFrame_TriggerOnKeydownToggle(self)
+  BindPadVars.triggerOnKeydown = (self:GetChecked() == 1);
+  BindPadCore.SetTriggerOnKeydown();
+end
+
+function BindPadCore.UpdateHotKey(slotID)
+  BindPadCore.AddAllHotKeys();
+  for name, info in pairs(BindPadCore.HotKeyList) do
+    if info:GetAction() == slotID then
+      BindPadCore.OverwriteHotKey(info);
+    end
+  end
+end
+
+function BindPadCore.OverwriteHotKey(info)
+  if BindPadVars.showKeyInTooltipFlag then
+    local action = BindPadCore.GetActionCommand(info:GetAction());
+    if action then
+      local key = GetBindingKey("CLICK BindPadKey:" .. action);
+      if key then
+        -- Check if this keybind is ready to use. (or residue)
+        if BindPadKey:GetAttribute("*type-" .. action) then
+          -- BindPad's ShowHotKey
+          info.bphotkey:SetText(BindPadCore.GetBindingText(key, "KEY_", 1));
+          info.bphotkey:SetAlpha(1);
+
+          -- Making original hotkey transparent.
+          info.hotkey:SetAlpha(0);
+          return;
+        end
+      end
+    end
+  end
+
+  -- Restoring original hotkey
+  info.bphotkey:SetAlpha(0);
+  info.hotkey:SetAlpha(1);
+end
+
+local function concat(arg1, arg2)
+  if arg1 and arg2 then
+    return arg1 .. arg2;
+  end
+end
+
+function BindPadCore.GetActionCommand(actionSlot)
+  local type, id, subType, subSubType = GetActionInfo(actionSlot);
+  if type == "spell" then
+    return concat("SPELL ", GetSpellInfo(id));
+  elseif type == "item" then
+    return concat("ITEM ", GetItemInfo(id));
+  elseif type == "macro" then
+    return concat("MACRO ", GetMacroInfo(id));
+  else
+    return nil;
+  end
+end
+
+function BindPadCore.CreateFrameHook(frameType, frameName, parentFrame, inheritsFrame, id)
+  if frameType == "CheckButton" and inheritsFrame then
+    if inheritsFrame == "ActionBarButtonTemplate" then
+      BindPadCore.CreateFrameQueue[frameName] = "ActionBarButtonTemplate";
+    end
+    if string.find(inheritsFrame, "SecureActionButtonTemplate%s*,%s*ActionButtonTemplate") then
+      BindPadCore.CreateFrameQueue[frameName] = "LibActionButton";
+    end
+  end
+end
+hooksecurefunc("CreateFrame", BindPadCore.CreateFrameHook);
